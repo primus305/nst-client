@@ -1,0 +1,37 @@
+<p-panel header="Tracks" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+  <p-messages [(value)]="msgs"></p-messages>
+  <p-listbox [options]="tracks" [(ngModel)]="selectedTracks" [multiple]="true" [checkbox]="true" [filter]="true" optionLabel="name" [listStyle]="{'max-height':'250px'}" [style]="{'width':'400px', 'margin':'0 auto'}" (click)="onSelectTrack()">
+    <p-header>
+      Tracks
+    </p-header>
+  </p-listbox>
+  <br>
+  <p-dialog header="Insert track" [(visible)]="displayTrack" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+    <form [formGroup]="trackForm" (ngSubmit)="saveTrack()">
+      <label>Name</label>
+      <input class="form-control" type="text" formControlName="trackName">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="nameRequired" *ngIf="!trackForm.controls['trackName'].valid&&trackForm.controls['trackName'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <label>Description</label>
+      <textarea class="form-control" formControlName="trackDescription" rows="3" cols="103"></textarea>
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="descriptionRequired" *ngIf="!trackForm.controls['trackDescription'].valid&&trackForm.controls['trackDescription'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="displayTrack=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+        <button type="submit" pButton icon="pi pi-check" label="Save" style="margin-right: .25em; float: right;" [disabled]="!trackForm.valid"></button>
+      </p-footer>
+    </form>
+  </p-dialog>
+  <p-footer>
+    <button pButton type="button" icon="pi pi-plus" label="New" class="ui-button-info" style="margin-right: .25em" (click)="showTrackModal()"></button>
+  </p-footer>
+</p-panel>

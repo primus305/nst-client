@@ -1,0 +1,71 @@
+<form [formGroup]="sessionForm" (ngSubmit)="newSessionGen()">
+<p-panel>
+  <p-header>
+    <div class="ui-helper-clearfix">
+      <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Session</span>
+      <button pButton [disabled]="saveDisabled" type="submit" icon="pi pi-fw pi-save" label="Save" class="ui-button-info" style="margin-left: .25em; float: right;" [disabled]="!sessionForm.valid"></button>
+      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New subsession" class="ui-button-info" style="margin-left: .25em; float: right;" (click)="addNewSubSession()"></button>
+      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New session" class="ui-button-info" style="float: right;" (click)="addNewSession()"></button>
+    </div>
+  </p-header>
+  <p-messages [(value)]="msgs"></p-messages>
+  <div class="row">
+    <div class="col-12" >
+      <label>Name</label>
+      <input class="form-control" type="text" formControlName="sessionName">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12" >
+      <p-messages [(value)]="nameRequired" *ngIf="!sessionForm.controls['sessionName'].valid&&sessionForm.controls['sessionName'].dirty" ></p-messages>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-12" >
+      <label>Overview</label>
+      <textarea class="form-control" formControlName="sessionOverview" rows="3"></textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12" >
+      <p-messages [(value)]="overviewRequired" *ngIf="!sessionForm.controls['sessionOverview'].valid&&sessionForm.controls['sessionOverview'].dirty" ></p-messages>
+    </div>
+  </div>
+  <br>
+  <div class="row" >
+    <div class="col-6">
+      <label>Time from</label>
+      <input type="text"
+             placeholder="Datepicker"
+             class="form-control"
+             formControlName="sessionDateFrom"
+             bsDatepicker>
+    </div>
+    <div class="col-6">
+      <timepicker [formControl]="sessionForm.controls['sessionTimeFrom']"></timepicker>
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="col-6">
+      <label>Time to</label>
+      <input type="text"
+             placeholder="Datepicker"
+             class="form-control"
+             formControlName="sessionDateTo"
+             bsDatepicker
+             size="100%">
+    </div>
+    <div class="col-6">
+      <timepicker [formControl]="sessionForm.controls['sessionTimeTo']"></timepicker>
+    </div>
+  </div>
+  <br>
+  <app-speaker-panel></app-speaker-panel>
+  <br>
+  <app-track-panel (trackSelected)="onTrackSelected($event)"></app-track-panel>
+  <br>
+  <app-hall-panel (hallSelected)="onHallSelected($event)"></app-hall-panel>
+</p-panel>
+</form>

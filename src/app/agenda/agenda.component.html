@@ -1,0 +1,62 @@
+<section>
+<br>
+<form [formGroup]="agendaForm" (ngSubmit)="onSubmit()">
+  <div class="container">
+    <p-panel>
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Agenda</span>
+          <button pButton type="submit" icon="pi pi-fw pi-save" label="Save agenda" class="ui-button-info" style="float: right;" [disabled]="!agendaForm.valid"></button>
+        </div>
+      </p-header>
+      <p-messages [(value)]="msgs"></p-messages>
+      <div class="row">
+        <div class="col-12" >
+          <label>Name</label>
+          <input class="form-control" type="text" formControlName="agendaName">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="nameRequired" *ngIf="!agendaForm.controls['agendaName'].valid&&agendaForm.controls['agendaName'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <div class="row" >
+        <div class="col-6">
+          <label>Time from</label>
+          <input type="text"
+                   placeholder="Datepicker"
+                   class="form-control"
+                    formControlName="dateFrom"
+                   size="100%"
+                   bsDatepicker>
+        </div>
+        <div class="col-6">
+          <timepicker [formControl]="agendaForm.controls['timeFrom']"></timepicker>
+        </div>
+      </div>
+      <br>
+      <div class="row" >
+        <div class="col-6">
+          <label>Time to</label>
+            <input type="text"
+                   placeholder="Datepicker"
+                   class="form-control"
+                   formControlName="dateTo"
+                   bsDatepicker
+                   size="100%">
+        </div>
+        <div class="col-6">
+          <timepicker [formControl]="agendaForm.controls['timeTo']"></timepicker>
+        </div>
+      </div>
+      <br>
+      <app-session [agendaID]="agendaID" (sessionsUpdated)="onSessionsUpdated($event)"></app-session>
+      <br>
+    </p-panel>
+  </div>
+</form>
+<br>
+
+</section>

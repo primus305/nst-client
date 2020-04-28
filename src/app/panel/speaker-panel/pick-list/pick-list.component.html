@@ -1,0 +1,9 @@
+<p-pickList [source]="sourceSpeakers" [target]="targetSpeakers" sourceHeader="Available" targetHeader="Selected" [responsive]="true" filterBy="firstName"
+            dragdrop="true" sourceFilterPlaceholder="Search by first name" targetFilterPlaceholder="Search by first name" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+(click)="onSelectedSpeakersChanged()" (mouseleave)="onSelectedSpeakersChanged()">
+  <ng-template let-speaker pTemplate="item">
+    <div class="ui-helper-clearfix">
+      <div style="font-size:14px;">{{speaker.firstName}} {{speaker.lastName}} - {{speaker.faculty}}</div>
+    </div>
+  </ng-template>
+</p-pickList>

@@ -1,0 +1,57 @@
+<p-panel header="Speakers" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+  <p-messages [(value)]="msgs"></p-messages>
+  <app-pick-list (refreshMessages)="onRefreshMessages()"></app-pick-list>
+  <br>
+  <p-dialog header="Insert speaker" [(visible)]="displaySpeaker" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+    <form [formGroup]="speakerForm" (ngSubmit)="saveSpeaker()">
+      <label>First name</label>
+      <input class="form-control" type="text" formControlName="speakerName">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="nameRequired" *ngIf="!speakerForm.controls['speakerName'].valid&&speakerForm.controls['speakerName'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <label>Last name</label>
+      <input class="form-control" type="text" formControlName="speakerLastName">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="lastNameRequired" *ngIf="!speakerForm.controls['speakerLastName'].valid&&speakerForm.controls['speakerLastName'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <label>Faculty</label>
+      <input class="form-control" type="text" formControlName="speakerFaculty">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="facultyRequired" *ngIf="!speakerForm.controls['speakerFaculty'].valid&&speakerForm.controls['speakerFaculty'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <label>Organization</label>
+      <input class="form-control" type="text" formControlName="speakerOrganization">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="organizationRequired" *ngIf="!speakerForm.controls['speakerOrganization'].valid&&speakerForm.controls['speakerOrganization'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <label>Email</label>
+      <input class="form-control" type="email" formControlName="speakerEmail">
+      <div class="row">
+        <div class="col-12" >
+          <p-messages [(value)]="emailValidation" *ngIf="!speakerForm.controls['speakerEmail'].valid&&speakerForm.controls['speakerEmail'].dirty" ></p-messages>
+        </div>
+      </div>
+      <br>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="displaySpeaker=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+        <button type="submit" pButton icon="pi pi-check" label="Save" [disabled]="!speakerForm.valid" style="margin-right: .25em; float: right;"></button>
+      </p-footer>
+    </form>
+  </p-dialog>
+  <p-footer>
+    <button pButton type="button" icon="pi pi-plus" label="New" class="ui-button-info" style="margin-right: .25em" (click)="showSpeakerModal()"></button>
+  </p-footer>
+</p-panel>
