@@ -1,0 +1,18 @@
+<!--<button mat-icon-button (click)="toggleSelected()">
+
+  <mat-icon
+    *ngIf="selected"
+    aria-label="Example icon-button with a heart icon">
+    favorite
+  </mat-icon>
+
+  <mat-icon
+    *ngIf="!selected"
+    aria-label="Example icon-button with a heart icon">
+    favorite_border
+  </mat-icon>
+
+</button>-->
+
+<button pButton type="button" icon="pi pi-thumbs-up" label="Sign in" style="float: right; margin-right: 5px;"  *ngIf="!selected" (click)="toggleSelected()"></button>
+<button pButton type="button" icon="pi pi-thumbs-down" label="Sign out" style="float: right; margin-right: 5px;"  *ngIf="selected" (click)="toggleSelected()"></button>

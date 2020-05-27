@@ -1,0 +1,131 @@
+
+<section style="padding-top: 10px; padding-bottom: 10px;">
+  <div class="container">
+<p-messages [(value)]="msgs"></p-messages>
+<p-dataView [value]="events" [paginator]="true" [rows]="8" paginatorPosition="both" [style]="{'min-height':'630px'}" *ngIf="isAdmin()">
+  <p-header>
+    <div class="ui-helper-clearfix">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-12" style="text-align:right">
+          <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </div>
+      </div>
+    </div>
+  </p-header>
+  <ng-template let-e pTemplate="listItem">
+    <div class="ui-g-12">
+      <div class="event-details">
+        <div>
+          <img *ngIf="e.image.name" [src]="e.image.name" style="margin: 0 auto; width: 100px; height: 100px;">
+          <div class="ui-g">
+            <div class="ui-g-12">Name: <b>{{e.name}}</b></div>
+            <div class="ui-g-12">Description: <b>{{e.description.substring(0, 55)}}</b> <b *ngIf="e.description.length > 55">...</b></div>
+            <div class="ui-g-12">Location: <b>{{e.location}}</b></div>
+          </div>
+        </div>
+        <div>
+          <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e)" style="float: right; margin-right: 5px;"></button>
+          <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e)" *ngIf="isAdmin()"></button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template let-e pTemplate="gridItem">
+    <div style="padding:.5em;" class="ui-g-12 ui-md-3">
+      <p-panel [header]="e.name" [style]="{'text-align':'center'}">
+        <img *ngIf="e.image.name" [src]="e.image.name" width="60">
+        <div class="ui-g-12"><b>{{e.description.substring(0, 30)}}</b><b *ngIf="e.description.length > 30">...</b></div>
+<!--        <div style="margin-top: 10px;">{{e.description}}</div>-->
+        <div class="event-detail">{{e.location}}</div>
+        <hr class="ui-widget-content" style="border-top:0">
+        <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e)" style="margin-top:0; margin-right: 5px;"></button>
+        <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e)" *ngIf="isAdmin()"></button>
+      </p-panel>
+    </div>
+  </ng-template>
+</p-dataView>
+<p-dataView [value]="attendeesEvents" [paginator]="true" [rows]="8" paginatorPosition="both" [style]="{'min-height':'630px'}" *ngIf="!isAdmin() && !isSpeaker()">
+  <p-header>
+    <div class="ui-helper-clearfix">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-12" style="text-align:right">
+          <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </div>
+      </div>
+    </div>
+  </p-header>
+  <ng-template let-e pTemplate="listItem">
+    <div class="ui-g-12">
+      <div class="event-details">
+        <div>
+          <img *ngIf="e.event.image.name" [src]="e.event.image.name" style="margin: 0 auto; width: 100px; height: 100px;">
+          <div class="ui-g">
+            <div class="ui-g-12">Name: <b>{{e.event.name}}</b></div>
+            <div class="ui-g-12">Description: <b>{{e.event.description.substring(0, 55)}}</b><b *ngIf="e.event.description.length > 55">...</b></div>
+            <div class="ui-g-12">Location: <b>{{e.event.location}}</b></div>
+          </div>
+        </div>
+        <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e.event)" style="float: right;" *ngIf="!isAdmin()"></button>
+        <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e.event)" *ngIf="isAdmin()"></button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template let-e pTemplate="gridItem">
+    <div style="padding:.5em;" class="ui-g-12 ui-md-3">
+      <p-panel [header]="e.event.name" [style]="{'text-align':'center'}">
+        <img *ngIf="e.event.image.name" [src]="e.event.image.name" width="60">
+        <div class="ui-g-12"><b>{{e.event.description.substring(0, 30)}}</b><b *ngIf="e.event.description.length > 30">...</b></div>
+<!--        <div style="margin-top: 10px;">{{e.event.description.substring(0, 30)}} <p *ngIf="e.event.description.length > 30">...</p></div>-->
+        <div class="event-detail">{{e.event.location}}</div>
+        <hr class="ui-widget-content" style="border-top:0">
+        <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e.event)" style="margin-top:0" *ngIf="!isAdmin()"></button>
+        <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e.event)" *ngIf="isAdmin()"></button>
+      </p-panel>
+    </div>
+  </ng-template>
+</p-dataView>
+
+    <p-dataView [value]="speakerEvents" [paginator]="true" [rows]="8" paginatorPosition="both" [style]="{'min-height':'630px'}" *ngIf="isSpeaker()">
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-12" style="text-align:right">
+              <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+            </div>
+          </div>
+        </div>
+      </p-header>
+      <ng-template let-e pTemplate="listItem">
+        <div class="ui-g-12">
+          <div class="event-details">
+            <div>
+              <img *ngIf="e.image.name" [src]="e.image.name" style="margin: 0 auto; width: 100px; height: 100px;">
+              <div class="ui-g">
+                <div class="ui-g-12">Name: <b>{{e.name}}</b></div>
+                <div class="ui-g-12">Description: <b>{{e.description.substring(0, 55)}}</b> <b *ngIf="e.description.length > 55">...</b></div>
+                <div class="ui-g-12">Location: <b>{{e.location}}</b></div>
+              </div>
+            </div>
+            <div>
+              <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e)" style="float: right; margin-right: 5px;"></button>
+              <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e)" *ngIf="isAdmin()"></button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template let-e pTemplate="gridItem">
+        <div style="padding:.5em;" class="ui-g-12 ui-md-3">
+          <p-panel [header]="e.name" [style]="{'text-align':'center'}">
+            <img *ngIf="e.image.name" [src]="e.image.name" width="60">
+            <div class="ui-g-12"><b>{{e.description.substring(0, 30)}}</b><b *ngIf="e.description.length > 30">...</b></div>
+            <!--        <div style="margin-top: 10px;">{{e.description}}</div>-->
+            <div class="event-detail">{{e.location}}</div>
+            <hr class="ui-widget-content" style="border-top:0">
+            <button pButton type="button" icon="pi pi-search" (click)="selectEvent($event, e)" style="margin-top:0; margin-right: 5px;"></button>
+            <button pButton type="button" icon="pi pi-user-plus" (click)="addAttendees(e)" *ngIf="isAdmin()"></button>
+          </p-panel>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
+</section>

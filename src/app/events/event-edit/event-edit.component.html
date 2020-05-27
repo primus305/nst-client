@@ -1,0 +1,45 @@
+<section style="padding-top: 10px; padding-bottom: 10px;">
+  <div class="container">
+    <p-panel>
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Event</span>
+        </div>
+      </p-header>
+      <p-messages [(value)]="msgs"></p-messages>
+      <form [formGroup]="eventForm" (ngSubmit)="getEvent()">
+        <label>Name</label>
+        <input class="form-control" type="text" formControlName="eventName">
+        <div class="form-control" *ngIf="!eventForm.controls['eventName'].valid&&eventForm.controls['eventName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+          <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
+        </div>
+        <br>
+        <label>Description</label>
+        <textarea class="form-control" formControlName="eventDescription" rows="3" cols="103"></textarea>
+        <div class="form-control" *ngIf="!eventForm.controls['eventDescription'].valid&&eventForm.controls['eventDescription'].dirty" style="background-color: #f8b7bd; color: #212121;">
+          <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Description is required</span>
+        </div>
+        <br>
+        <label>Location</label>
+        <input class="form-control" type="text" formControlName="eventLocation">
+        <div class="form-control" *ngIf="!eventForm.controls['eventLocation'].valid&&eventForm.controls['eventLocation'].dirty" style="background-color: #f8b7bd; color: #212121;">
+          <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Location is required</span>
+        </div>
+        <br>
+        <label>Logo</label><br>
+        <img *ngIf="image" [src]="image" style="margin: 0 auto;">
+        <button pButton type="button" icon="pi pi-times" class="ui-button-info" style="margin-right: .25em; margin-left: 10px;" (click)="deleteCurrentLogo()" *ngIf="image"></button>
+<!--        <span *ngIf="image" style="cursor: pointer;" (click)="deleteCurrentLogo()"><i class="pi pi-times"></i></span>-->
+        <p-fileUpload name="file" url="{{fileUploadApi}}" (onSelect)="onUpload($event)" accept="image/*" maxFileSize="1000000">
+        </p-fileUpload>
+        <br>
+
+        <button pButton type="button" icon="pi pi-pencil" label="Agenda" class="ui-button-info" style="margin-right: .25em;" (click)="editAgenda()" *ngIf="haveAgenda"></button>
+        <button pButton type="button" icon="pi pi-plus" label="Agenda" class="ui-button-info" style="margin-right: .25em;" (click)="createAgenda()" *ngIf="!haveAgenda"></button>
+        <button pButton type="button" icon="pi pi-times" label="Cancel" class="ui-button-danger" style="margin-right: .25em;" (click)="cancel()"></button>
+        <button pButton type="submit" icon="pi pi-fw pi-save" label="Save" class="ui-button-success" style="float: right;" [disabled]="!eventForm.valid"></button>
+
+      </form>
+    </p-panel>
+  </div>
+</section>

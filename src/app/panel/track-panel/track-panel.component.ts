@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Track} from '../../model/track';
 import {TrackService} from '../../shared/track-service/track.service';
 import {Message} from 'primeng';
@@ -15,11 +15,9 @@ export class TrackPanelComponent implements OnInit {
   trackDescription: string;
   displayTrack = false;
   tracks: Track[] = [];
-  selectedTracks: Track[] = [];
+  @Input() selectedTracks: Track[] = [];
   msgs: Message[] = [];
   trackForm: FormGroup;
-  nameRequired: Message[] = [];
-  descriptionRequired: Message[] = [];
 
   constructor(private trackService: TrackService, private fb: FormBuilder) {}
 
@@ -27,7 +25,6 @@ export class TrackPanelComponent implements OnInit {
     this.getTracks();
     this.listenRefreshPanel();
     this.cleanForm();
-    this.setMessages();
   }
 
   getTracks() {
@@ -99,10 +96,5 @@ export class TrackPanelComponent implements OnInit {
 
   onSelectTrack() {
     this.trackSelected.emit(this.selectedTracks);
-  }
-
-  setMessages() {
-    this.nameRequired.push({severity: 'error', summary: 'Name is required.'});
-    this.descriptionRequired.push({severity: 'error', summary: 'Description is required.'});
   }
 }

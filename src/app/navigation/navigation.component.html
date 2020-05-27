@@ -1,6 +1,11 @@
-<p-menubar [model]="items">
+<p-menubar [model]="itemsAdmin" *ngIf="isLoggedIn() && isAdmin()">
   <div>
-    <input type="text" pInputText placeholder="Search">
-    <button pButton label="Logout" icon="pi pi-power-off" style="margin-left:.25em"></button>
+    <button pButton label="Logout" icon="pi pi-power-off" style="margin-left:.25em" (click)="logout()"></button>
+  </div>
+</p-menubar>
+
+<p-menubar [model]="itemsAttendee" *ngIf="isLoggedIn() && !isAdmin()">
+  <div>
+    <button pButton label="Logout" icon="pi pi-power-off" style="margin-left:.25em" (click)="logout()"></button>
   </div>
 </p-menubar>

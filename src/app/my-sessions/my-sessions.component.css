@@ -1,0 +1,12 @@
+table {
+  width: 100%;
+}
+section {
+  color: whitesmoke;
+  background-image: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('../../assets/meeting.jpg');
+  min-height: 630px;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}

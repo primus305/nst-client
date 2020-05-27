@@ -1,0 +1,71 @@
+section {
+  color: whitesmoke;
+  background-image: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('../../../assets/meeting.jpg');
+  min-height: 630px;
+}
+
+.filter-container {
+  text-align: center;
+}
+
+.attendee-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2em;
+  border-bottom: 1px solid #d9dad9;
+}
+
+.attendee-details > div {
+  display: flex;
+  align-items: center;
+  width: 125px;
+  height: 100px;
+}
+
+.attendee-details > div img {
+  margin-right: 14px;
+}
+
+.attendee-detail {
+  padding: 0 1em 1em 1em;
+  border-bottom: 1px solid #d9dad9;
+  margin: 1em;
+}
+
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .attendee-details > .p-grid {
+  border: 1px solid #b3c2ca;
+  border-radius: 3px;
+  margin: 0.3em;
+  text-align: center;
+  padding: 2em 0 2.25em 0;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .attendee-data .attendee-title {
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 24px;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .attendee-data .attendee-subtitle {
+  margin: 0.25em 0 2em 0;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .attendee-data button {
+  margin-left: 0.5em;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .attendee-data button:first-child {
+  margin-left: 0;
+}
+.carousel-demo .ui-carousel.custom-carousel .ui-carousel-dot-icon {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50%;
+}
+.carousel-demo .ui-carousel.ui-carousel-horizontal .ui-carousel-content .ui-carousel-item.ui-carousel-item-start .attendee-details > .p-grid {
+  margin-left: 0.6em;
+}
+.carousel-demo .ui-carousel.ui-carousel-horizontal .ui-carousel-content .ui-carousel-item.ui-carousel-item-end .attendee-details > .p-grid {
+  margin-right: 0.6em;
+}
+
+agm-map {
+  height: 300px;
+}

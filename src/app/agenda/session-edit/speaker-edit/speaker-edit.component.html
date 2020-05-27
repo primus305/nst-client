@@ -1,0 +1,111 @@
+<p-panel header="Speakers" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+  <p-messages [(value)]="msgs"></p-messages>
+  <table mat-table [dataSource]="sourceSpeakers" matSort  class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+    <ng-container matColumnDef="icon">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element"> <i class="pi pi-user"></i> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> First name </th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+    </ng-container>
+    <!-- Position Column -->
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last name </th>
+      <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="faculty">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Faculty </th>
+      <td mat-cell *matCellDef="let element"> {{element.faculty}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="organization">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Organization </th>
+      <td mat-cell *matCellDef="let element"> {{element.organization}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="remove-icon">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element"> <span style="cursor: pointer;" (click)="deleteSessionSpeaker(element)"><i class="pi pi-times"></i></span> </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <p-dialog header="Select tracks" [(visible)]="displaySpeakerSearch" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+    <app-speaker-list (refreshMessages)="onRefreshMessages()" (speakersEmitter)="onSpeakerEmitter($event)" [sessionSpeakers]="selectedSpeakers"></app-speaker-list>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" (click)="displaySpeakerSearch=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+      <button type="button" pButton icon="pi pi-check" label="Save" style="margin-right: .25em; float: right;" [disabled]="!atLeastOneTrack()" (click)="addNewSpeakers()"></button>
+    </p-footer>
+  </p-dialog>
+  <br>
+  <p-dialog header="Insert speaker" [(visible)]="displaySpeaker" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+    <form [formGroup]="speakerForm" (ngSubmit)="saveSpeaker()">
+      <label>First name</label>
+      <input class="form-control ng-dirty ng-invalid" type="text" formControlName="speakerName">
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerName'].valid&&speakerForm.controls['speakerName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> First name is required</span>
+      </div>
+      <br>
+      <label>Last name</label>
+      <input class="form-control" type="text" formControlName="speakerLastName">
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerLastName'].valid&&speakerForm.controls['speakerLastName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Last name is required</span>
+      </div>
+      <br>
+      <label>Faculty</label>
+      <input class="form-control" type="text" formControlName="speakerFaculty">
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerFaculty'].valid&&speakerForm.controls['speakerFaculty'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Faculty is required</span>
+      </div>
+      <br>
+      <label>Organization</label>
+      <input class="form-control" type="text" formControlName="speakerOrganization">
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerOrganization'].valid&&speakerForm.controls['speakerOrganization'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Organization is required</span>
+      </div>
+      <br>
+      <label>Email</label>
+      <input class="form-control" type="email" formControlName="speakerEmail">
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerEmail'].valid&&speakerForm.controls['speakerEmail'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Not valid email</span>
+      </div>
+      <br>
+      <label>Username</label>
+      <input class="form-control" type="text" formControlName="username">
+      <div class="form-control" *ngIf="!speakerForm.controls['username'].valid&&speakerForm.controls['username'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Username is required</span>
+      </div>
+      <br>
+      <label>Password</label>
+      <input class="form-control" type="password" formControlName="password">
+      <div class="form-control" *ngIf="!speakerForm.controls['password'].valid&&speakerForm.controls['password'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Username is required</span>
+      </div>
+      <br>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="displaySpeaker=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+        <button type="submit" pButton icon="pi pi-check" label="Save" [disabled]="!speakerForm.valid" style="margin-right: .25em; float: right;"></button>
+      </p-footer>
+    </form>
+  </p-dialog>
+  <p-footer>
+    <button pButton type="button" icon="pi pi-plus" label="New" class="ui-button-info" style="margin-right: .25em" (click)="showSpeakerModal()"></button>
+    <button type="button" pButton icon="pi pi-search" (click)="getTracksForSelect()" label="Search" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+  </p-footer>
+</p-panel>

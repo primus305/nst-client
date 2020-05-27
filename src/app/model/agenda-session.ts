@@ -1,6 +1,7 @@
 import {Hall} from './hall';
 import {AgendaSessionSpeaker} from './agenda-session-speaker';
 import {AgendaSessionTrack} from './agenda-session-track';
+import {File} from './file';
 
 export class AgendaSession {
 
@@ -14,4 +15,5 @@ export class AgendaSession {
     sessionOverview: string;
     tracks: AgendaSessionTrack[];
     speakers: AgendaSessionSpeaker[];
+    file: File;
 }

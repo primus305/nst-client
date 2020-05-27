@@ -13,17 +13,11 @@ export class SpeakerPanelComponent implements OnInit {
   displaySpeaker = false;
   msgs: Message[] = [];
   speakerForm: FormGroup;
-  nameRequired: Message[] = [];
-  lastNameRequired: Message[] = [];
-  facultyRequired: Message[] = [];
-  organizationRequired: Message[] = [];
-  emailValidation: Message[] = [];
 
   constructor(private speakerService: SpeakerService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.cleanForm();
-    this.setMessages();
   }
 
   cleanForm() {
@@ -32,7 +26,9 @@ export class SpeakerPanelComponent implements OnInit {
       speakerLastName: new FormControl('', Validators.required),
       speakerFaculty: new FormControl('', Validators.required),
       speakerOrganization: new FormControl('', Validators.required),
-      speakerEmail: new FormControl('', Validators.email)
+      speakerEmail: new FormControl('', Validators.email),
+      username: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required)
     });
   }
 
@@ -53,7 +49,10 @@ export class SpeakerPanelComponent implements OnInit {
       lastName: this.speakerForm.get('speakerLastName').value,
       faculty: this.speakerForm.get('speakerFaculty').value,
       organization: this.speakerForm.get('speakerOrganization').value,
-      email: this.speakerForm.get('speakerEmail').value
+      username: this.speakerForm.get('username').value,
+      password: this.speakerForm.get('password').value,
+      email: this.speakerForm.get('speakerEmail').value,
+      role: null
     };
     this.speakerService.saveSpeaker(speaker).subscribe(
       (data) => {
@@ -76,13 +75,5 @@ export class SpeakerPanelComponent implements OnInit {
 
   onRefreshMessages() {
     this.msgs = [];
-  }
-
-  setMessages() {
-    this.nameRequired.push({severity: 'error', summary: 'First name is required.'});
-    this.lastNameRequired.push({severity: 'error', summary: 'Last name is required.'});
-    this.facultyRequired.push({severity: 'error', summary: 'Faculty is required.'});
-    this.organizationRequired.push({severity: 'error', summary: 'Organization is required.'});
-    this.emailValidation.push({severity: 'error', summary: 'Not valid email.'});
   }
 }

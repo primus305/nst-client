@@ -6,10 +6,8 @@
     <form [formGroup]="hallForm" (ngSubmit)="saveHall()">
       <label>Name</label>
       <input class="form-control" type="text" formControlName="hallName">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="nameRequired" *ngIf="!hallForm.controls['hallName'].valid&&hallForm.controls['hallName'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!hallForm.controls['hallName'].valid&&hallForm.controls['hallName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
       </div>
       <br>
       <br>

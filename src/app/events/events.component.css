@@ -1,0 +1,44 @@
+.filter-container {
+  text-align: center;
+}
+.event-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2em;
+  border-bottom: 1px solid #d9dad9;
+}
+.event-details > div {
+  display: flex;
+  align-items: center;
+}
+.event-details > div img {
+  margin-right: 14px;
+}
+.event-detail {
+  padding: 0 1em 1em 1em;
+  border-bottom: 1px solid #d9dad9;
+  margin: 10px 1em 1em;
+}
+.ui-panel-content {
+  padding: 1em;
+}
+.dark-theme :host ::ng-deep .event-details,
+.dark-theme :host ::ng-deep .event-detail {
+  border-bottom: 1px solid #191919;
+}
+
+@media (max-width: 1024px) {
+  .event-details img {
+    width: 75px;
+  }
+  .filter-container {
+    text-align: left;
+  }
+}
+
+section {
+   color: whitesmoke;
+   background-image: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('../../assets/bg6.jpg');
+   min-height: 630px;
+ }

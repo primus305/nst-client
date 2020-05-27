@@ -11,18 +11,14 @@
     <form [formGroup]="trackForm" (ngSubmit)="saveTrack()">
       <label>Name</label>
       <input class="form-control" type="text" formControlName="trackName">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="nameRequired" *ngIf="!trackForm.controls['trackName'].valid&&trackForm.controls['trackName'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!trackForm.controls['trackName'].valid&&trackForm.controls['trackName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
       </div>
       <br>
       <label>Description</label>
       <textarea class="form-control" formControlName="trackDescription" rows="3" cols="103"></textarea>
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="descriptionRequired" *ngIf="!trackForm.controls['trackDescription'].valid&&trackForm.controls['trackDescription'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!trackForm.controls['trackDescription'].valid&&trackForm.controls['trackDescription'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Description is required</span>
       </div>
       <br>
       <p-footer>

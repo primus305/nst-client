@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Hall} from '../../model/hall';
 import {HallService} from '../../shared/hall-service/hall.service';
 import {Message} from 'primeng';
@@ -12,10 +12,10 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 export class HallPanelComponent implements OnInit {
   @Output() hallSelected = new EventEmitter<Hall>();
   halls: Hall[];
-  selectedHall: Hall;
+  // selectedHall: Hall;
+  @Input() selectedHall: Hall;
   display = false;
   msgs: Message[] = [];
-  nameRequired: Message[] = [];
   hallForm: FormGroup;
 
   constructor(private hallService: HallService, private fb: FormBuilder) { }
@@ -24,7 +24,6 @@ export class HallPanelComponent implements OnInit {
     this.getHalls();
     this.listenRefreshPanel();
     this.cleanForm();
-    this.nameRequired.push({severity: 'error', summary: 'Name is required.'});
   }
 
   listenRefreshPanel() {

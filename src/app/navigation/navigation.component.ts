@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MenuItem} from 'primeng';
+import {UserService} from '../shared/user-service/user.service';
+import {User} from '../model/user';
 
 @Component({
   selector: 'app-navigation',
@@ -7,86 +9,76 @@ import {MenuItem} from 'primeng';
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit {
-  items: MenuItem[];
-  constructor() { }
+  itemsAdmin: MenuItem[];
+  itemsAttendee: MenuItem[];
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
-    this.items = [
+    this.userService.curUser
+      .subscribe(
+        (u) => {
+          if (this.isAdmin()) {
+            this.setAdminItems(u.firstName, u.lastName);
+          } else {
+            this.setAttendeeItems(u.firstName, u.lastName);
+          }
+        }
+      );
+  }
+
+  isLoggedIn() {
+    return this.userService.loggedIn;
+  }
+
+  logout() {
+    this.userService.logout();
+  }
+
+  isAdmin() {
+    return this.userService.admin;
+  }
+
+  setAdminItems(firstName, lastName) {
+    this.itemsAdmin = [
       {
-        label: 'File',
-        icon: 'pi pi-fw pi-file',
-        items: [{
-          label: 'New',
-          icon: 'pi pi-fw pi-plus',
-          items: [
-            {label: 'Project'},
-            {label: 'Other'},
-          ]
-        },
-          {label: 'Open'},
-          {separator: true},
-          {label: 'Quit'}
-        ]
-      },
-      {
-        label: 'Edit',
-        icon: 'pi pi-fw pi-pencil',
-        items: [
-          {label: 'Delete', icon: 'pi pi-fw pi-trash'},
-          {label: 'Refresh', icon: 'pi pi-fw pi-refresh'}
-        ]
-      },
-      {
-        label: 'Help',
-        icon: 'pi pi-fw pi-question',
-        items: [
-          {
-            label: 'Contents'
-          },
-          {
-            label: 'Search',
-            icon: 'pi pi-fw pi-search',
-            items: [
-              {
-                label: 'Text',
-                items: [
-                  {
-                    label: 'Workspace'
-                  }
-                ]
-              },
-              {
-                label: 'File'
-              }
-            ]}
-        ]
-      },
-      {
-        label: 'Actions',
+        label: 'Events',
         icon: 'pi pi-fw pi-cog',
         items: [
           {
-            label: 'Edit',
-            icon: 'pi pi-fw pi-pencil',
-            items: [
-              {label: 'Save', icon: 'pi pi-fw pi-save'},
-              {label: 'Update', icon: 'pi pi-fw pi-save'},
-            ]
+            label: 'New',
+            icon: 'pi pi-plus',
+            routerLink: '/event-create'
           },
           {
-            label: 'Other',
-            icon: 'pi pi-fw pi-tags',
-            items: [
-              {label: 'Delete', icon: 'pi pi-fw pi-minus'}
-            ]
+            label: 'Edit',
+            icon: 'pi pi-fw pi-pencil',
+            routerLink: '/events'
           }
         ]
       },
       {separator: true},
       {
-        label: 'Quit', icon: 'pi pi-fw pi-times'
+        label: firstName + ' ' + lastName, icon: 'pi pi-user'
       }
     ];
   }
 
+  setAttendeeItems(firstName, lastName) {
+    this.itemsAttendee = [
+      {
+        label: 'My Events',
+        icon: 'pi pi-fw pi-calendar',
+        routerLink: '/events'
+      },
+      {
+        label: 'My Sessions',
+        icon: 'pi pi-fw pi-clock',
+        routerLink: '/my-sessions'
+      },
+      {separator: true},
+      {
+        label: firstName + ' ' + lastName, icon: 'pi pi-user'
+      }
+    ];
+  }
 }

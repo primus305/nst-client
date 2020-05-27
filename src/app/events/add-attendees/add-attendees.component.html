@@ -1,0 +1,105 @@
+<section style="padding-top: 10px; padding-bottom: 10px;">
+  <div class="container">
+    <p-panel header="Add attendees to event" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+      <p-messages [(value)]="msgs"></p-messages>
+      <p-dialog header="Insert user" [(visible)]="displayUser" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+                [draggable]="false" [resizable]="false">
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+          <label>First name</label>
+          <input class="form-control" type="text" formControlName="firstName">
+          <div class="form-control" *ngIf="!userForm.controls['firstName'].valid&&userForm.controls['firstName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> First name is required</span>
+          </div>
+          <br>
+          <label>Last name</label>
+          <input class="form-control" type="text" formControlName="lastName">
+          <div class="form-control" *ngIf="!userForm.controls['lastName'].valid&&userForm.controls['lastName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Last name is required</span>
+          </div>
+          <br>
+          <label>Faculty</label>
+          <input class="form-control" type="text" formControlName="faculty">
+          <div class="form-control" *ngIf="!userForm.controls['faculty'].valid&&userForm.controls['faculty'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Faculty is required</span>
+          </div>
+          <br>
+          <label>Organization</label>
+          <input class="form-control" type="text" formControlName="organization">
+          <div class="form-control" *ngIf="!userForm.controls['organization'].valid&&userForm.controls['organization'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Organization is required</span>
+          </div>
+          <br>
+          <label>Email</label>
+          <input class="form-control" type="email" formControlName="email">
+          <div class="form-control" *ngIf="!userForm.controls['email'].valid&&userForm.controls['email'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Not valid email</span>
+          </div>
+          <br>
+          <label>Username</label>
+          <input class="form-control" type="text" formControlName="username">
+          <div class="form-control" *ngIf="!userForm.controls['username'].valid&&userForm.controls['username'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Username is required</span>
+          </div>
+          <br>
+          <label>Password</label>
+          <input class="form-control" type="password" formControlName="password">
+          <div class="form-control" *ngIf="!userForm.controls['password'].valid&&userForm.controls['password'].dirty" style="background-color: #f8b7bd; color: #212121;">
+            <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Password is required</span>
+          </div>
+          <br>
+          <p-radioButton name="groupname" label="Administrator" value="ADMINISTRATOR" formControlName="role"></p-radioButton>
+          <p-radioButton name="groupname" label="Attendee" value="ATTENDEE" formControlName="role" [style]="{'margin-left':'15px'}"></p-radioButton>
+    <!--      <div class="row">
+            <div class="col-12" >
+              <p-messages [(value)]="passwordRequired" *ngIf="!userForm.controls['password'].valid&&userForm.controls['password'].dirty" ></p-messages>
+            </div>
+          </div>-->
+          <br>
+          <br>
+          <p-footer>
+            <button type="button" pButton icon="pi pi-times" (click)="displayUser=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+            <button type="submit" pButton icon="pi pi-check" label="Save" [disabled]="!userForm.valid" style="margin-right: .25em; float: right;"></button>
+          </p-footer>
+        </form>
+      </p-dialog>
+      <p-pickList [source]="sourceUsers" [target]="targetUsers" sourceHeader="Available" targetHeader="Selected" [responsive]="true" filterBy="firstName"
+                  dragdrop="true" sourceFilterPlaceholder="Search by first name" targetFilterPlaceholder="Search by first name" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}">
+        <ng-template let-user pTemplate="item">
+          <div class="ui-helper-clearfix">
+            <div style="font-size:14px;">{{user.firstName}} {{user.lastName}} - {{user.faculty}}</div>
+          </div>
+        </ng-template>
+      </p-pickList>
+      <div class="ui-g">
+      <div style="margin: 0 auto;" *ngIf="eventAttendees.length">
+        <p-carousel [value]="eventAttendees" [numVisible]="5" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
+          <ng-template let-a pTemplate="item" style="text-align: center;">
+            <div class="attendee-details">
+              <div class="p-grid p-nogutter">
+                <div class="p-col-12">
+
+                </div>
+                <div class="p-col-12 attendee-data">
+                  <div class="attendee-title">{{a.user.firstName}} {{a.user.lastName}}</div>
+                  <div class="attendee-subtitle">{{a.user.faculty}}</div>
+                  <div class="attendee-subtitle">{{a.user.organization}}</div>
+                  <div class="attendee-buttons">
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-search"></button>
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-star"></button>
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-cog"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+      </div>
+      <p-footer>
+        <button pButton type="button" icon="pi pi-fw pi-save" label="Save" class="ui-button-success" style="margin-right: .25em" (click)="savePresences()" [disabled]="!presencesValid()"></button>
+        <button pButton type="button" icon="pi pi-plus" label="New" class="ui-button-info" style="margin-right: .25em" (click)="showUserModal()"></button>
+      </p-footer>
+    </p-panel>
+
+  </div>
+</section>

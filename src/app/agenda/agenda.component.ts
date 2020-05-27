@@ -4,6 +4,8 @@ import {Agenda} from '../model/agenda';
 import {AgendaSession} from '../model/agenda-session';
 import {Message} from 'primeng';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {SessionStorageService} from 'ngx-webstorage';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-agenda',
@@ -20,7 +22,8 @@ export class AgendaComponent implements OnInit {
   msgs: Message[] = [];
   nameRequired: Message[] = [];
   agendaForm: FormGroup;
-  constructor(private agendaService: AgendaService, private fb: FormBuilder) {
+  constructor(private agendaService: AgendaService, private fb: FormBuilder, private sessionStorage: SessionStorageService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -60,8 +63,9 @@ export class AgendaComponent implements OnInit {
         }
         this.displayDialog = false;
         this.showSuccessMessage();
-        this.cleanForm();
-        this.agendaService.refreshSessionPanel.emit();
+        this.router.navigate(['/event-create']);
+        // this.cleanForm();
+        // this.agendaService.refreshSessionPanel.emit();
       },
       (error) => {
         console.log('GRESKAAA sessions!', error);
@@ -102,9 +106,8 @@ export class AgendaComponent implements OnInit {
   }
 
   showSuccessMessage() {
-    this.msgs = [];
-    this.msgs.push({severity: 'success', summary: 'Success Message',
-      detail: 'Uspešno sačuvana agenda.'});
+    this.sessionStorage.store('message-success-agenda', 'Uspešno sačuvana agenda.');
+    this.sessionStorage.store('agenda', this.agendaID);
   }
 
   cleanForm() {
@@ -120,4 +123,5 @@ export class AgendaComponent implements OnInit {
   onSessionsUpdated(updatedSessions: AgendaSession[]) {
     this.sessions = updatedSessions;
   }
+
 }

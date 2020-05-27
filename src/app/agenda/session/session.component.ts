@@ -11,16 +11,23 @@ import {AgendaSessionTrack} from '../../model/agenda-session-track';
 import {Speaker} from '../../model/speaker';
 import {AgendaService} from '../../shared/agenda-service/agenda.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {DatePipe} from '@angular/common';
+import {ValidatorService} from '../../shared/validator/validator.service';
+import {SessionStorageService} from 'ngx-webstorage';
+import {File} from '../../model/file';
+import {FileService} from '../../shared/file-service/file.service';
 
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
-  styleUrls: ['./session.component.css']
+  styleUrls: ['./session.component.css'],
+  providers: [DatePipe]
 })
 export class SessionComponent implements OnInit {
   msgs: Message[] = [];
   nameRequired: Message[] = [];
   overviewRequired: Message[] = [];
+  dateValidation: Message[] = [];
   selectedHall: Hall;
   selectedTracks: Track[] = [];
   sessions: AgendaSession[] = [];
@@ -33,16 +40,30 @@ export class SessionComponent implements OnInit {
   addDisabled = true;
   saveDisabled = false;
   sessionForm: FormGroup;
+  fileUploadApi = 'http://localhost:8080/file/save';
 
   constructor(private speakerService: SpeakerService, private trackService: TrackService,
-              private hallService: HallService, private agendaService: AgendaService, private fb: FormBuilder) { }
+              private hallService: HallService, private agendaService: AgendaService, private fb: FormBuilder,
+              private datePipe: DatePipe, private validatorService: ValidatorService, private sessionStorage: SessionStorageService,
+              private fileService: FileService) { }
 
   ngOnInit() {
     this.listenSelectSpeaker();
     this.listenRefreshPanel();
+    this.listenValidator();
     this.cleanForm();
     this.nameRequired.push({severity: 'error', summary: 'Name is required.'});
     this.overviewRequired.push({severity: 'error', summary: 'Overview is required.'});
+  }
+
+  listenValidator() {
+    this.validatorService.sendMessage
+      .subscribe(
+        (poruka) => {
+          this.dateValidation = [];
+          this.dateValidation.push({severity: 'error', summary: poruka});
+        }
+      );
   }
 
   listenRefreshPanel() {
@@ -85,9 +106,10 @@ export class SessionComponent implements OnInit {
       detail: message});
   }
 
-  addNewSubSession() {
+  addNewSubSession(form) {
     this.sessionMode = false;
     this.emptySessionForm();
+    form.clear();
     this.showSuccessMessageSubSession();
   }
 
@@ -99,9 +121,12 @@ export class SessionComponent implements OnInit {
     this.selectedHall = selectedHall;
   }
 
-  addNewSession() {
+  addNewSession(form) {
     this.sessionMode = true;
+    this.validatorService.superSessionTimeFrom = null;
+    this.validatorService.superSessionTimeTo = null;
     this.emptySessionForm();
+    form.clear();
     this.showSuccessMessageSession();
   }
 
@@ -117,7 +142,10 @@ export class SessionComponent implements OnInit {
       detail: 'Sesija je kreirana.'});
   }
 
-  makeAndPush(superS: AgendaSession, sessionTimeFrom: Date, sessionTimeTo: Date) {
+  pushFullSession(superS: AgendaSession, sessionTimeFrom: Date, sessionTimeTo: Date, attachment: File) {
+    this.aggregationSpeaker();
+    this.aggregationTrack();
+    console.log('Poziv iz pushFullSession() :', this.tracksAgr);
     const session: AgendaSession = {
       sessionID: this.sessions.length + 1,
       agendaID: this.agendaID + 1,
@@ -128,9 +156,33 @@ export class SessionComponent implements OnInit {
       hall: this.selectedHall,
       sessionOverview: this.sessionForm.get('sessionOverview').value,
       tracks: this.tracksAgr,
-      speakers: this.speakers
+      speakers: this.speakers,
+      file: attachment
     };
     this.sessions.push(session);
+    this.sessionsUpdated.emit(this.sessions);
+    this.postAddingSession();
+  }
+
+  makeAndPush(superS: AgendaSession, sessionTimeFrom: Date, sessionTimeTo: Date) {
+    if (this.sessionStorage.retrieve('attachment') === null) {
+      // this.myEvent.image = null;
+      this.pushFullSession(superS, sessionTimeFrom, sessionTimeTo, null);
+    } else {
+      this.fileService.getFile(this.sessionStorage.retrieve('attachment'))
+        .subscribe(
+          (res) => {
+            const file: File = {
+              id: res.id,
+              name: res.name,
+              type: res.type,
+              fileByte: res.fileByte
+            };
+            this.pushFullSession(superS, sessionTimeFrom, sessionTimeTo, file);
+            this.sessionStorage.clear('attachment');
+          }
+        );
+    }
   }
 
   newSessionGen() {
@@ -149,11 +201,16 @@ export class SessionComponent implements OnInit {
         }
       }
     }
-    this.aggregationSpeaker();
-    this.aggregationTrack();
+    if (superS == null) {
+      this.validatorService.superSessionTimeFrom = sessionTimeFrom;
+      this.validatorService.superSessionTimeTo = sessionTimeTo;
+    }
+/*    this.aggregationSpeaker();
+    this.aggregationTrack();*/
     this.makeAndPush(superS, sessionTimeFrom, sessionTimeTo);
-    this.sessionsUpdated.emit(this.sessions);
-    this.postAddingSession();
+    console.log('Provera liste sesija: ', this.sessions);
+/*    this.sessionsUpdated.emit(this.sessions);
+    this.postAddingSession();*/
   }
 
   postAddingSession() {
@@ -169,7 +226,9 @@ export class SessionComponent implements OnInit {
       this.tracksAgr.push({
         sessionID: this.sessions.length + 1,
         agendaID: this.agendaID + 1,
-        trackID: track.trackID
+        trackID: track.trackID,
+        agendaSession: null,
+        track: null
       });
     }
   }
@@ -179,7 +238,9 @@ export class SessionComponent implements OnInit {
       this.speakers.push({
         sessionID: this.sessions.length + 1,
         agendaID: this.agendaID + 1,
-        speakerID: s.speakerID
+        speakerID: s.speakerID,
+        agendaSession: null,
+        speaker: null
       });
     }
   }
@@ -192,6 +253,17 @@ export class SessionComponent implements OnInit {
       sessionTimeFrom: new FormControl(new Date()),
       sessionDateTo: new FormControl(new Date()),
       sessionTimeTo: new FormControl(new Date())
-    });
+    }, {
+      validators: [
+        this.validatorService.dateLessThan('sessionTimeFrom', 'sessionTimeTo', 'sessionDateFrom', 'sessionDateTo'),
+        this.validatorService.dateIntervalSubSession('sessionTimeFrom', 'sessionTimeTo', 'sessionDateFrom', 'sessionDateTo')
+      ]});
+    this.selectedHall = null;
+  }
+
+  onUpload(event) {
+    for (const file of event.files) {
+      this.sessionStorage.store('attachment', file.name);
+    }
   }
 }

@@ -1,0 +1,85 @@
+section {
+  color: whitesmoke;
+  background-image: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)), url('../../../assets/meeting.jpg');
+  min-height: 630px;
+}
+
+.filter-container {
+  text-align: center;
+}
+
+.speaker-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2em;
+  border-bottom: 1px solid #d9dad9;
+}
+
+.speaker-details > div {
+  display: flex;
+  align-items: center;
+  width: 105px;
+  height: 100px;
+}
+
+.speaker-details > div img {
+  margin-right: 14px;
+}
+
+.speaker-detail {
+  padding: 0 1em 1em 1em;
+  border-bottom: 1px solid #d9dad9;
+  margin: 1em;
+}
+/*
+.ui-panel-content {
+  padding: 1em;
+}
+.dark-theme :host ::ng-deep .speaker-details,
+.dark-theme :host ::ng-deep .speaker-detail {
+  border-bottom: 1px solid #191919;
+}
+
+@media (max-width: 1024px) {
+  .speaker-details img {
+    width: 75px;
+  }
+  .filter-container {
+    text-align: left;
+  }
+}*/
+
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .speaker-details > .p-grid {
+  border: 1px solid #b3c2ca;
+  border-radius: 3px;
+  margin: 0.3em;
+  text-align: center;
+  padding: 2em 0 2.25em 0;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .speaker-data .speaker-title {
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 24px;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .speaker-data .speaker-subtitle {
+  margin: 0.25em 0 2em 0;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .speaker-data button {
+  margin-left: 0.5em;
+}
+.carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .speaker-data button:first-child {
+  margin-left: 0;
+}
+.carousel-demo .ui-carousel.custom-carousel .ui-carousel-dot-icon {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 50%;
+}
+.carousel-demo .ui-carousel.ui-carousel-horizontal .ui-carousel-content .ui-carousel-item.ui-carousel-item-start .speaker-details > .p-grid {
+  margin-left: 0.6em;
+}
+.carousel-demo .ui-carousel.ui-carousel-horizontal .ui-carousel-content .ui-carousel-item.ui-carousel-item-end .speaker-details > .p-grid {
+  margin-right: 0.6em;
+}
+

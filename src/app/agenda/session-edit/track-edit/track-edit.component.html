@@ -1,0 +1,45 @@
+<p-panel header="Tracks" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+  <p-messages [(value)]="msgs"></p-messages>
+  <p-dialog header="Select tracks" [(visible)]="displayTrackSearch" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+      <p-listbox [options]="tracks" [(ngModel)]="forSave" [multiple]="true" [checkbox]="true" [filter]="true" optionLabel="name" [listStyle]="{'max-height':'250px', 'min-height':'250px'}" [style]="{'width':'400px', 'margin':'0 auto'}">
+        <p-header>
+          Tracks
+        </p-header>
+      </p-listbox>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="displayTrackSearch=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+        <button type="button" pButton icon="pi pi-check" label="Save" style="margin-right: .25em; float: right;" [disabled]="!atLeastOneTrack()" (click)="addNewTracks()"></button>
+      </p-footer>
+  </p-dialog>
+
+  <div *ngFor="let t of selectedTracks">
+    <div>{{t.name}}<span style="cursor: pointer;" (click)="deleteSessionTrack(t)"><i class="pi pi-times"></i></span></div>
+  </div>
+  <br>
+  <p-dialog header="Insert track" [(visible)]="displayTrack" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
+            [draggable]="false" [resizable]="false">
+    <form [formGroup]="trackForm" (ngSubmit)="saveTrack()">
+      <label>Name</label>
+      <input class="form-control" type="text" formControlName="trackName">
+      <div class="form-control" *ngIf="!trackForm.controls['trackName'].valid&&trackForm.controls['trackName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
+      </div>
+      <br>
+      <label>Description</label>
+      <textarea class="form-control" formControlName="trackDescription" rows="3" cols="103"></textarea>
+      <div class="form-control" *ngIf="!trackForm.controls['trackDescription'].valid&&trackForm.controls['trackDescription'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Description is required</span>
+      </div>
+      <br>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-times" (click)="displayTrack=false" label="Cancel" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+        <button type="submit" pButton icon="pi pi-check" label="Save" style="margin-right: .25em; float: right;" [disabled]="!trackForm.valid"></button>
+      </p-footer>
+    </form>
+  </p-dialog>
+  <p-footer>
+    <button pButton type="button" icon="pi pi-plus" label="New" class="ui-button-info" style="margin-right: .25em" (click)="showTrackModal()"></button>
+    <button type="button" pButton icon="pi pi-search" (click)="getTracksForSelect()" label="Search" class="ui-button-secondary" style="margin-left: .25em;float: right;"></button>
+  </p-footer>
+</p-panel>

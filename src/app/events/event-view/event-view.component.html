@@ -1,0 +1,46 @@
+<section style="padding-top: 10px; padding-bottom: 10px;">
+<div class="container" style="text-align: center;">
+<p-panel>
+  <p-header>
+    <div class="ui-helper-clearfix">
+      <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">{{myEvent.name}}</span>
+    </div>
+  </p-header>
+  <div class="ui-g">
+    <img *ngIf="retrievedImage" [src]="retrievedImage" style="margin: 0 auto; width: 100px; height: 100px;">
+    <div class="ui-g-12"><b>{{myEvent.description}}</b></div>
+    <div class="ui-g-12"><b>{{myEvent.location}}</b></div>
+
+  <div style="margin: 0 auto;" *ngIf="eventAttendees.length">
+    <p-carousel [value]="eventAttendees" [numVisible]="5" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
+      <ng-template let-a pTemplate="item" style="text-align: center;">
+        <div class="attendee-details">
+          <div class="p-grid p-nogutter">
+            <div class="p-col-12">
+
+            </div>
+            <div class="p-col-12 attendee-data">
+              <div class="attendee-title">{{a.user.firstName}} {{a.user.lastName}}</div>
+              <div class="attendee-subtitle">{{a.user.faculty}}</div>
+              <div class="attendee-subtitle">{{a.user.organization}}</div>
+<!--              <div class="attendee-subtitle">{{a.user.email}}</div>-->
+              <div class="attendee-buttons">
+                <button pButton type="button" class="ui-button-secondary" icon="pi pi-search"></button>
+                <button pButton type="button" class="ui-button-secondary" icon="pi pi-star"></button>
+                <button pButton type="button" class="ui-button-secondary" icon="pi pi-cog"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-carousel>
+  </div>
+  </div>
+<!--  <p-gmap [options]="options" [style]="{'width':'100%','height':'320px'}" ></p-gmap>-->
+  <p-footer>
+    <button pButton type="button" icon="pi pi-search" label="Agenda" class="ui-button-success" (click)="openAgenda()"></button>
+    <button pButton type="button" icon="pi pi-pencil" label="Edit" style="float: right; margin-right: 5px;" *ngIf="isAdmin()" (click)="editEvent()"></button>
+  </p-footer>
+</p-panel>
+</div>
+</section>

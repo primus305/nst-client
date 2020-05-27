@@ -1,0 +1,83 @@
+<section style="padding-top: 10px; padding-bottom: 10px;">
+  <div class="container" style="text-align: center;">
+    <p-panel>
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">{{agendaSession.name}}</span>
+        </div>
+      </p-header>
+      <p-messages [(value)]="msgs"></p-messages>
+      <div class="ui-g">
+        <div *ngIf="sessionTracks.length" class="ui-g-12">
+          <b style="color: blue; font-weight: bold; font-style: italic;" *ngFor="let track of sessionTracks">#{{track.track.name}}  </b>
+        </div>
+        <div class="ui-g-12"><b>{{agendaSession.sessionOverview}}</b></div>
+        <div class="ui-g-12"><b>{{agendaSession.timeFrom | date:'MMM d, y'}}, from {{agendaSession.timeFrom | date:'h:mm a'}} to {{agendaSession.timeTo | date:'h:mm a'}}</b></div>
+        <div class="ui-g-12" ><b *ngIf="hallName">{{hallName}}</b></div>
+        <div style="margin: 0 auto;" *ngIf="sessionSpeakers.length">
+        <p-carousel [value]="sessionSpeakers" [numVisible]="3" [numScroll]="3" [circular]="false" [responsiveOptions]="responsiveOptions">
+          <ng-template let-s pTemplate="item" style="text-align: center;">
+            <div class="speaker-details">
+              <div class="p-grid p-nogutter">
+                <div class="p-col-12">
+
+                </div>
+                <div class="p-col-12 speaker-data">
+                  <div class="speaker-title">{{s.speaker.firstName}} {{s.speaker.lastName}}</div>
+                  <div class="speaker-subtitle">{{s.speaker.faculty}}</div>
+                  <div class="speaker-subtitle">{{s.speaker.organization}}</div>
+                  <div class="speaker-buttons">
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-search"></button>
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-star"></button>
+                    <button pButton type="button" class="ui-button-secondary" icon="pi pi-cog"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+        </div>
+        <div class="ui-g-12">
+        <button pButton type="button" class="ui-button-info" icon="pi pi-users" pTooltip="Attendees" (click)="displayAtt()"></button>
+        </div>
+        <div class="ui-g-12" *ngIf="subSessions.length" style="text-align: left;">
+          <p-accordion *ngFor="let subSession of subSessions" [style]="{'text-align':'center'}">
+            <p-accordionTab header="{{subSession.timeFrom | date:'h:mm a'}} - {{subSession.timeTo | date:'h:mm a'}}" [selected]="true" >
+              <b>{{subSession.name}}</b><br>
+              <b *ngFor="let t of subSession.tracks">
+                <b style="color: blue; font-style: italic;"> #{{t.track.name}} </b>
+              </b>
+              <br>
+              <p style="font-size: 13px;" *ngIf="subSession.hall">{{subSession.hall.name}}</p>
+                <b *ngFor="let s of subSession.speakers">
+                  <b style="font-size: 13px;"> {{s.speaker.firstName}} {{s.speaker.lastName}} </b>
+                </b>
+              <br>
+              <button pButton type="button" class="ui-button-info" icon="pi pi-search" (click)="openSubSession(subSession)"></button>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+      <p-footer>
+        <button type="button" pButton icon="pi pi-arrow-left" class="ui-button-info" style="margin-left: .25em; width: 50px;" (click)="goBack()"></button>
+        <button pButton type="button" icon="pi pi-download" label="Attachment" style="float: right; margin-right: 5px;" (click)="downloadFile()" *ngIf="agendaSession.file"></button>
+        <button pButton type="button" icon="pi pi-pencil" label="Edit" style="float: right; margin-right: 5px;" *ngIf="isAdmin() || isSpeakerSession()" (click)="editSession()"></button>
+        <!--<button pButton type="button" icon="pi pi-thumbs-up" label="Sign in" style="float: right; margin-right: 5px;"  *ngIf="!mySession && !isAdmin() && !isSpeaker()"></button>
+        <button pButton type="button" icon="pi pi-thumbs-down" label="Sign out" style="float: right; margin-right: 5px;"  *ngIf="mySession && !isAdmin() && !isSpeaker()"></button>-->
+        <app-favorite-button style="float: right;" [agendaID]="agendaID" [sessionID]="sessionID" [selected]="mySession" (msg)="showMessage($event)" *ngIf="!isAdmin() && !isSpeaker()"></app-favorite-button>
+      </p-footer>
+    </p-panel>
+  </div>
+  <p-dialog header="Attendees on session" [(visible)]="displayAttendees" [modal]="true">
+    <div *ngIf="sessionUsers.length">
+      <li *ngFor="let us of sessionUsers">
+        {{us.presence.user.firstName}} {{us.presence.user.lastName}}, {{us.presence.user.faculty}}, {{us.presence.user.organization}}, {{us.presence.user.email}}
+      </li>
+    </div>
+    <div class="ui-g" *ngIf="sessionUsers.length == 0">
+      <div class="alert-danger">
+        <div class="ui-g-12">There are no attendees on this session.</div>
+      </div>
+    </div>
+  </p-dialog>
+</section>

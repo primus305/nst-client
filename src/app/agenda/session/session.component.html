@@ -4,8 +4,8 @@
     <div class="ui-helper-clearfix">
       <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Session</span>
       <button pButton [disabled]="saveDisabled" type="submit" icon="pi pi-fw pi-save" label="Save" class="ui-button-info" style="margin-left: .25em; float: right;" [disabled]="!sessionForm.valid"></button>
-      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New subsession" class="ui-button-info" style="margin-left: .25em; float: right;" (click)="addNewSubSession()"></button>
-      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New session" class="ui-button-info" style="float: right;" (click)="addNewSession()"></button>
+      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New subsession" class="ui-button-info" style="margin-left: .25em; float: right;" (click)="addNewSubSession(form)"></button>
+      <button pButton [disabled]="addDisabled" type="button" icon="pi pi-plus" label="New session" class="ui-button-info" style="float: right;" (click)="addNewSession(form)"></button>
     </div>
   </p-header>
   <p-messages [(value)]="msgs"></p-messages>
@@ -61,11 +61,15 @@
       <timepicker [formControl]="sessionForm.controls['sessionTimeTo']"></timepicker>
     </div>
   </div>
+  <p-messages [(value)]="dateValidation" *ngIf="sessionForm.errors"></p-messages>
   <br>
   <app-speaker-panel></app-speaker-panel>
   <br>
   <app-track-panel (trackSelected)="onTrackSelected($event)"></app-track-panel>
   <br>
   <app-hall-panel (hallSelected)="onHallSelected($event)"></app-hall-panel>
+  <br>
+  <p-fileUpload #form name="file" url="{{fileUploadApi}}" (onSelect)="onUpload($event)" maxFileSize="1000000">
+  </p-fileUpload>
 </p-panel>
 </form>

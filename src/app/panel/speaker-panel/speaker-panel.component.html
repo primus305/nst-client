@@ -7,42 +7,44 @@
     <form [formGroup]="speakerForm" (ngSubmit)="saveSpeaker()">
       <label>First name</label>
       <input class="form-control" type="text" formControlName="speakerName">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="nameRequired" *ngIf="!speakerForm.controls['speakerName'].valid&&speakerForm.controls['speakerName'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerName'].valid&&speakerForm.controls['speakerName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> First name is required</span>
       </div>
       <br>
       <label>Last name</label>
       <input class="form-control" type="text" formControlName="speakerLastName">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="lastNameRequired" *ngIf="!speakerForm.controls['speakerLastName'].valid&&speakerForm.controls['speakerLastName'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerLastName'].valid&&speakerForm.controls['speakerLastName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Last name is required</span>
       </div>
       <br>
       <label>Faculty</label>
       <input class="form-control" type="text" formControlName="speakerFaculty">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="facultyRequired" *ngIf="!speakerForm.controls['speakerFaculty'].valid&&speakerForm.controls['speakerFaculty'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerFaculty'].valid&&speakerForm.controls['speakerFaculty'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Faculty is required</span>
       </div>
       <br>
       <label>Organization</label>
       <input class="form-control" type="text" formControlName="speakerOrganization">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="organizationRequired" *ngIf="!speakerForm.controls['speakerOrganization'].valid&&speakerForm.controls['speakerOrganization'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerOrganization'].valid&&speakerForm.controls['speakerOrganization'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Organization is required</span>
       </div>
       <br>
       <label>Email</label>
       <input class="form-control" type="email" formControlName="speakerEmail">
-      <div class="row">
-        <div class="col-12" >
-          <p-messages [(value)]="emailValidation" *ngIf="!speakerForm.controls['speakerEmail'].valid&&speakerForm.controls['speakerEmail'].dirty" ></p-messages>
-        </div>
+      <div class="form-control" *ngIf="!speakerForm.controls['speakerEmail'].valid&&speakerForm.controls['speakerEmail'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Not valid email</span>
+      </div>
+      <br>
+      <label>Username</label>
+      <input class="form-control" type="text" formControlName="username">
+      <div class="form-control" *ngIf="!speakerForm.controls['username'].valid&&speakerForm.controls['username'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Username is required</span>
+      </div>
+      <br>
+      <label>Password</label>
+      <input class="form-control" type="password" formControlName="password">
+      <div class="form-control" *ngIf="!speakerForm.controls['password'].valid&&speakerForm.controls['password'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Password is required</span>
       </div>
       <br>
       <p-footer>

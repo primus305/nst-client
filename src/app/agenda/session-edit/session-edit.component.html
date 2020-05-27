@@ -1,0 +1,83 @@
+<section style="padding-top: 10px; padding-bottom: 10px;">
+  <div class="container">
+  <form [formGroup]="sessionForm" (ngSubmit)="getAttachment()">
+    <p-panel>
+      <p-header>
+        <div class="ui-helper-clearfix">
+          <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">Session</span>
+
+        </div>
+      </p-header>
+      <p-messages [(value)]="msgs"></p-messages>
+      <div class="row">
+        <div class="col-12" >
+          <label>Name</label>
+          <input class="form-control" type="text" formControlName="sessionName">
+        </div>
+      </div>
+      <div class="form-control" *ngIf="!sessionForm.controls['sessionName'].valid&&sessionForm.controls['sessionName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-12" >
+          <label>Overview</label>
+          <textarea class="form-control" formControlName="sessionOverview" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="form-control" *ngIf="!sessionForm.controls['sessionOverview'].valid&&sessionForm.controls['sessionOverview'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Overview is required</span>
+      </div>
+      <br>
+      <div class="row" >
+        <div class="col-6">
+          <label>Time from</label>
+          <input type="text"
+                 placeholder="Datepicker"
+                 class="form-control"
+                 formControlName="sessionDateFrom"
+                 bsDatepicker>
+        </div>
+        <div class="col-6">
+          <timepicker [formControl]="sessionForm.controls['sessionTimeFrom']"></timepicker>
+        </div>
+      </div>
+
+      <div class="row" >
+        <div class="col-6">
+          <label>Time to</label>
+          <input type="text"
+                 placeholder="Datepicker"
+                 class="form-control"
+                 formControlName="sessionDateTo"
+                 bsDatepicker
+                 size="100%">
+        </div>
+        <div class="col-6">
+          <timepicker [formControl]="sessionForm.controls['sessionTimeTo']"></timepicker>
+        </div>
+      </div>
+      <div class="form-control" *ngIf="sessionForm.errors" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> {{dateValidation.entries().next().value[1].summary}}</span>
+      </div>
+<!--      <p-messages [(value)]="dateValidation" *ngIf="sessionForm.errors"></p-messages>-->
+      <br>
+      <app-speaker-edit (speakerSelectedForSave)="onSpeakerForSave($event)" (speakerSelectedForDelete)="onSpeakerForDelete($event)"></app-speaker-edit>
+      <br>
+      <app-track-edit (trackSelectedForSave)="onTrackSelected($event)" (trackSelectedForDelete)="onTrackSelectedForDelete($event)"></app-track-edit>
+      <br>
+      <app-hall-panel (hallSelected)="onHallSelected($event)" [selectedHall]="selectedHall"></app-hall-panel>
+      <br>
+      <label>Attachment</label><br>
+      <b style="margin-bottom: 10px;">{{file}}</b>
+      <button pButton type="button" icon="pi pi-times" class="ui-button-info" style="margin-right: .25em; margin-left: 10px;" (click)="deleteCurrentAttachment()" *ngIf="file"></button>
+      <p-fileUpload name="file" url="{{fileUploadApi}}" (onSelect)="onUpload($event)" maxFileSize="1000000">
+      </p-fileUpload>
+      <p-footer>
+        <button pButton type="button" icon="pi pi-times" label="Cancel" class="ui-button-danger" style="margin-right: .25em;" (click)="cancel()"></button>
+        <button pButton type="submit" icon="pi pi-fw pi-save" label="Save" class="ui-button-info" [disabled]="!sessionForm.valid"></button>
+      </p-footer>
+    </p-panel>
+  </form>
+  </div>
+</section>
