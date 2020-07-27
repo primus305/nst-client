@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {Message} from 'primeng';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SpeakerService} from '../../../shared/speaker-service/speaker.service';
@@ -6,13 +6,14 @@ import {Speaker} from '../../../model/speaker';
 import {MatSort, MatTableDataSource} from '@angular/material';
 import {AgendaSessionSpeaker} from '../../../model/agenda-session-speaker';
 import {ActivatedRoute} from '@angular/router';
+import {AgendaSession} from '../../../model/agenda-session';
 
 @Component({
   selector: 'app-speaker-edit',
   templateUrl: './speaker-edit.component.html',
   styleUrls: ['./speaker-edit.component.css']
 })
-export class SpeakerEditComponent implements OnInit {
+export class SpeakerEditComponent implements OnInit, OnChanges {
   sourceSpeakers;
   displaySpeaker = false;
   msgs: Message[] = [];
@@ -22,10 +23,9 @@ export class SpeakerEditComponent implements OnInit {
   targetSpeakers: Speaker[] = [];
   displayedColumns: string[] = ['icon', 'firstName', 'lastName', 'faculty', 'organization', 'email', 'remove-icon'];
   @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @Output() speakerSelectedForSave = new EventEmitter<AgendaSessionSpeaker[]>();
-  @Output() speakerSelectedForDelete = new EventEmitter<AgendaSessionSpeaker[]>();
-  sessionSpeakersForSave: AgendaSessionSpeaker[] = [];
-  sessionSpeakersForDelete: AgendaSessionSpeaker[] = [];
+  @Output() changeSpeakersTable = new EventEmitter<AgendaSessionSpeaker[]>();
+  @Input() sessionSpeakers: AgendaSessionSpeaker[];
+  @Input() session: AgendaSession;
 
   constructor(private speakerService: SpeakerService, private fb: FormBuilder, private route: ActivatedRoute) { }
 
@@ -98,7 +98,6 @@ export class SpeakerEditComponent implements OnInit {
 
   getTracksForSelect() {
     this.speakerService.refreshSourceSpeakers.emit();
-    // this.sessionSpeakersForSave = [];
     this.displaySpeakerSearch = true;
   }
 
@@ -106,19 +105,8 @@ export class SpeakerEditComponent implements OnInit {
     return this.targetSpeakers.length > 0;
   }
 
-  existInDelete(speaker: Speaker) {
-    for (let i = 0; i < this.sessionSpeakersForDelete.length; i++) {
-      if (speaker.speakerID === this.sessionSpeakersForDelete[i].speakerID) {
-        this.sessionSpeakersForDelete.splice(i, 1);
-      }
-    }
-  }
-
   addNewSpeakers() {
-    for (const s of this.targetSpeakers) {
-      this.existInDelete(s);
-      this.selectedSpeakers.push(s);
-    }
+    this.targetSpeakers.forEach(speaker => this.selectedSpeakers.push(speaker));
     this.emitSessionSpeakersForSave();
     this.speakerService.refreshSpeakerPanel.emit();
     this.sourceSpeakers = new MatTableDataSource(this.selectedSpeakers);
@@ -127,40 +115,29 @@ export class SpeakerEditComponent implements OnInit {
   }
 
   deleteSessionSpeaker(speaker: Speaker) {
-    for (let i = 0; i < this.selectedSpeakers.length; i++) {
-      if (this.selectedSpeakers[i].speakerID === speaker.speakerID) {
-        this.selectedSpeakers.splice(i, 1);
-        this.sourceSpeakers = new MatTableDataSource(this.selectedSpeakers);
-        this.sourceSpeakers.sort = this.sort;
-        this.sessionSpeakersForDelete.push({
-          sessionID: +this.route.snapshot.params.id,
-          agendaID: +this.route.snapshot.params.agenda,
-          speakerID: speaker.speakerID,
-          agendaSession: null,
-          speaker: null
-        });
-      }
-    }
-    this.speakerSelectedForDelete.emit(this.sessionSpeakersForDelete);
-  }
-
-  onSpeakerEmitter(speakers: Speaker[]) {
-    this.selectedSpeakers = speakers;
-    this.sourceSpeakers = new MatTableDataSource(this.selectedSpeakers);
-    this.sourceSpeakers.sort = this.sort;
+    this.selectedSpeakers = this.selectedSpeakers.filter(item => item !== speaker);
+    this.sessionSpeakers = this.sessionSpeakers.filter(item => item.speakerID !== speaker.speakerID);
+    this.changeSpeakersTable.emit(this.sessionSpeakers);
   }
 
   emitSessionSpeakersForSave() {
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.targetSpeakers.length; i++) {
-      this.sessionSpeakersForSave.push({
+    this.targetSpeakers.forEach(speaker => {
+      this.sessionSpeakers.push({
         sessionID: +this.route.snapshot.params.id,
         agendaID: +this.route.snapshot.params.agenda,
-        speakerID: this.targetSpeakers[i].speakerID,
-        agendaSession: null,
-        speaker: null
+        speakerID: speaker.speakerID,
+        speaker
       });
+    });
+    this.changeSpeakersTable.emit(this.sessionSpeakers);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.sessionSpeakers) {
+      this.selectedSpeakers = [];
+      this.sessionSpeakers.forEach(s => this.selectedSpeakers.push(s.speaker));
+      this.sourceSpeakers = new MatTableDataSource(this.selectedSpeakers);
+      this.sourceSpeakers.sort = this.sort;
     }
-    this.speakerSelectedForSave.emit(this.sessionSpeakersForSave);
   }
 }

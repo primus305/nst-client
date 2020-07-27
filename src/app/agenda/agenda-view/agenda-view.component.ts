@@ -14,15 +14,7 @@ import {DatePipe} from '@angular/common';
   providers: [DatePipe]
 })
 export class AgendaViewComponent implements OnInit {
-
-  sessions: AgendaSession[] = [];
-  agenda: Agenda = {
-    agendaID: null,
-    name: null,
-    dateFrom: null,
-    dateTo: null,
-    sessions: null
-  };
+  agenda: Agenda;
   events: any[] = [];
 
   options: any;
@@ -54,22 +46,7 @@ export class AgendaViewComponent implements OnInit {
     this.agendaService.findById(id)
       .subscribe(
         (agenda) => {
-          console.log('Agenda:', agenda);
           this.agenda = agenda;
-          this.getSessions(agenda.agendaID);
-        },
-        (error) => {
-          console.log('GRESKAAA!', error);
-        }
-      );
-  }
-
-  getSessions(id) {
-    this.agendaService.getAllSessions(id)
-      .subscribe(
-        (sessions) => {
-          console.log('Sesije:', sessions);
-          this.sessions = sessions;
           this.postavi();
         },
         (error) => {
@@ -79,15 +56,15 @@ export class AgendaViewComponent implements OnInit {
   }
 
   postavi() {
-    for (const s of this.sessions) {
-      if (s.superSession == null) {
+    this.agenda.sessions.forEach(session => {
+      if (session.superSession == null) {
         this.events = [...this.events, {
-          id: s.sessionID,
-          title: s.name,
-          start: this.datePipe.transform(s.timeFrom, 'yyyy-MM-ddTHH:mm'),
-          end: this.datePipe.transform(s.timeTo, 'yyyy-MM-ddTHH:mm')
+          id: session.sessionID,
+          title: session.name,
+          start: this.datePipe.transform(session.timeFrom, 'yyyy-MM-ddTHH:mm'),
+          end: this.datePipe.transform(session.timeTo, 'yyyy-MM-ddTHH:mm')
         }];
       }
-    }
+    });
   }
 }

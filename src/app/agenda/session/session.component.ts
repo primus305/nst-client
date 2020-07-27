@@ -25,9 +25,7 @@ import {FileService} from '../../shared/file-service/file.service';
 })
 export class SessionComponent implements OnInit {
   msgs: Message[] = [];
-  nameRequired: Message[] = [];
-  overviewRequired: Message[] = [];
-  dateValidation: Message[] = [];
+  dateValidation: string;
   selectedHall: Hall;
   selectedTracks: Track[] = [];
   sessions: AgendaSession[] = [];
@@ -42,9 +40,14 @@ export class SessionComponent implements OnInit {
   sessionForm: FormGroup;
   fileUploadApi = 'http://localhost:8080/file/save';
 
-  constructor(private speakerService: SpeakerService, private trackService: TrackService,
-              private hallService: HallService, private agendaService: AgendaService, private fb: FormBuilder,
-              private datePipe: DatePipe, private validatorService: ValidatorService, private sessionStorage: SessionStorageService,
+  constructor(private speakerService: SpeakerService,
+              private trackService: TrackService,
+              private hallService: HallService,
+              private agendaService: AgendaService,
+              private fb: FormBuilder,
+              private datePipe: DatePipe,
+              private validatorService: ValidatorService,
+              private sessionStorage: SessionStorageService,
               private fileService: FileService) { }
 
   ngOnInit() {
@@ -52,16 +55,13 @@ export class SessionComponent implements OnInit {
     this.listenRefreshPanel();
     this.listenValidator();
     this.cleanForm();
-    this.nameRequired.push({severity: 'error', summary: 'Name is required.'});
-    this.overviewRequired.push({severity: 'error', summary: 'Overview is required.'});
   }
 
   listenValidator() {
     this.validatorService.sendMessage
       .subscribe(
         (poruka) => {
-          this.dateValidation = [];
-          this.dateValidation.push({severity: 'error', summary: poruka});
+          this.dateValidation = poruka;
         }
       );
   }
@@ -96,14 +96,8 @@ export class SessionComponent implements OnInit {
 
   showSuccessSavedMessage() {
     this.msgs = [];
-    let message: string;
-    if (this.sessionMode === false) {
-      message = 'Podsesija je sačuvana.';
-    } else {
-      message = 'Sesija je sačuvana.';
-    }
     this.msgs.push({severity: 'success', summary: 'Success Message',
-      detail: message});
+      detail: this.sessionMode === false ? 'Podsesija je sačuvana.' : 'Sesija je sačuvana.'});
   }
 
   addNewSubSession(form) {
@@ -145,7 +139,6 @@ export class SessionComponent implements OnInit {
   pushFullSession(superS: AgendaSession, sessionTimeFrom: Date, sessionTimeTo: Date, attachment: File) {
     this.aggregationSpeaker();
     this.aggregationTrack();
-    console.log('Poziv iz pushFullSession() :', this.tracksAgr);
     const session: AgendaSession = {
       sessionID: this.sessions.length + 1,
       agendaID: this.agendaID + 1,
@@ -166,7 +159,6 @@ export class SessionComponent implements OnInit {
 
   makeAndPush(superS: AgendaSession, sessionTimeFrom: Date, sessionTimeTo: Date) {
     if (this.sessionStorage.retrieve('attachment') === null) {
-      // this.myEvent.image = null;
       this.pushFullSession(superS, sessionTimeFrom, sessionTimeTo, null);
     } else {
       this.fileService.getFile(this.sessionStorage.retrieve('attachment'))
@@ -205,12 +197,7 @@ export class SessionComponent implements OnInit {
       this.validatorService.superSessionTimeFrom = sessionTimeFrom;
       this.validatorService.superSessionTimeTo = sessionTimeTo;
     }
-/*    this.aggregationSpeaker();
-    this.aggregationTrack();*/
     this.makeAndPush(superS, sessionTimeFrom, sessionTimeTo);
-    console.log('Provera liste sesija: ', this.sessions);
-/*    this.sessionsUpdated.emit(this.sessions);
-    this.postAddingSession();*/
   }
 
   postAddingSession() {
@@ -222,7 +209,7 @@ export class SessionComponent implements OnInit {
   }
 
   aggregationTrack() {
-    for (const track of this.selectedTracks) {
+    this.selectedTracks.forEach(track => {
       this.tracksAgr.push({
         sessionID: this.sessions.length + 1,
         agendaID: this.agendaID + 1,
@@ -230,19 +217,18 @@ export class SessionComponent implements OnInit {
         agendaSession: null,
         track: null
       });
-    }
+    });
   }
 
   aggregationSpeaker() {
-    for (const s of this.selectedSpeakers) {
+    this.selectedSpeakers.forEach(speaker => {
       this.speakers.push({
         sessionID: this.sessions.length + 1,
         agendaID: this.agendaID + 1,
-        speakerID: s.speakerID,
-        agendaSession: null,
+        speakerID: speaker.speakerID,
         speaker: null
       });
-    }
+    });
   }
 
   cleanForm() {

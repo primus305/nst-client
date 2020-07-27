@@ -12,7 +12,6 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 export class HallPanelComponent implements OnInit {
   @Output() hallSelected = new EventEmitter<Hall>();
   halls: Hall[];
-  // selectedHall: Hall;
   @Input() selectedHall: Hall;
   display = false;
   msgs: Message[] = [];

@@ -2,7 +2,7 @@
   <p-messages [(value)]="msgs"></p-messages>
   <p-dialog header="Select tracks" [(visible)]="displayTrackSearch" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000"
             [draggable]="false" [resizable]="false">
-      <p-listbox [options]="tracks" [(ngModel)]="forSave" [multiple]="true" [checkbox]="true" [filter]="true" optionLabel="name" [listStyle]="{'max-height':'250px', 'min-height':'250px'}" [style]="{'width':'400px', 'margin':'0 auto'}">
+      <p-listbox [options]="tracks" [(ngModel)]="targetTracks" [multiple]="true" [checkbox]="true" [filter]="true" optionLabel="name" [listStyle]="{'max-height':'250px', 'min-height':'250px'}" [style]="{'width':'400px', 'margin':'0 auto'}">
         <p-header>
           Tracks
         </p-header>

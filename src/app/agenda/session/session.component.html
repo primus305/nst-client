@@ -13,11 +13,9 @@
     <div class="col-12" >
       <label>Name</label>
       <input class="form-control" type="text" formControlName="sessionName">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12" >
-      <p-messages [(value)]="nameRequired" *ngIf="!sessionForm.controls['sessionName'].valid&&sessionForm.controls['sessionName'].dirty" ></p-messages>
+      <div class="form-control" *ngIf="!sessionForm.controls['sessionName'].valid&&sessionForm.controls['sessionName'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Name is required</span>
+      </div>
     </div>
   </div>
   <br>
@@ -25,11 +23,9 @@
     <div class="col-12" >
       <label>Overview</label>
       <textarea class="form-control" formControlName="sessionOverview" rows="3"></textarea>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12" >
-      <p-messages [(value)]="overviewRequired" *ngIf="!sessionForm.controls['sessionOverview'].valid&&sessionForm.controls['sessionOverview'].dirty" ></p-messages>
+      <div class="form-control" *ngIf="!sessionForm.controls['sessionOverview'].valid&&sessionForm.controls['sessionOverview'].dirty" style="background-color: #f8b7bd; color: #212121;">
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> Overview is required</span>
+      </div>
     </div>
   </div>
   <br>
@@ -61,7 +57,10 @@
       <timepicker [formControl]="sessionForm.controls['sessionTimeTo']"></timepicker>
     </div>
   </div>
-  <p-messages [(value)]="dateValidation" *ngIf="sessionForm.errors"></p-messages>
+  <div class="form-control" *ngIf="sessionForm.errors" style="background-color: #f8b7bd; color: #212121;">
+    <span ><i class="pi pi-times" style="vertical-align: middle;"></i> {{dateValidation}}</span>
+  </div>
+<!--  <p-messages [(value)]="dateValidation" *ngIf="sessionForm.errors"></p-messages>-->
   <br>
   <app-speaker-panel></app-speaker-panel>
   <br>

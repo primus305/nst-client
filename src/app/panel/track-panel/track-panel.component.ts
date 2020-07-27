@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Track} from '../../model/track';
 import {TrackService} from '../../shared/track-service/track.service';
 import {Message} from 'primeng';
@@ -97,4 +97,5 @@ export class TrackPanelComponent implements OnInit {
   onSelectTrack() {
     this.trackSelected.emit(this.selectedTracks);
   }
+
 }

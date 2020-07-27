@@ -22,8 +22,11 @@ export class EventCreateComponent implements OnInit {
   id: number;
   agenda: Agenda;
 
-  constructor(private fb: FormBuilder, private eventService: EventService, private router: Router,
-              private fileService: FileService, private sessionStorage: SessionStorageService) { }
+  constructor(private fb: FormBuilder,
+              private eventService: EventService,
+              private router: Router,
+              private fileService: FileService,
+              private sessionStorage: SessionStorageService) { }
 
   ngOnInit() {
     this.cleanForm();
@@ -76,13 +79,6 @@ export class EventCreateComponent implements OnInit {
             fileByte: res.fileByte
           };
           this.id = this.sessionStorage.retrieve('agenda');
-          const a: Agenda = {
-            agendaID: this.id + 1,
-            name: null,
-            dateFrom: null,
-            dateTo: null,
-            sessions: null
-          };
           this.sessionStorage.clear('agenda');
           const myEvent: MyEvent = {
             eventID: null,
@@ -90,7 +86,7 @@ export class EventCreateComponent implements OnInit {
             description: this.eventForm.get('eventDescription').value,
             location: this.eventForm.get('eventLocation').value,
             image: img,
-            agenda: a
+            agenda: {agendaID: this.id + 1}
           };
           this.saveEvent(myEvent);
         }

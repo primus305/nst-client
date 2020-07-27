@@ -20,12 +20,8 @@ import {FileService} from '../../shared/file-service/file.service';
 export class SessionEditComponent implements OnInit {
   agendaSession: AgendaSession;
   msgs: Message[] = [];
-  dateValidation: Message[] = [];
+  dateValidation: string;
   selectedHall: Hall;
-  selectedTracksForSave: AgendaSessionTrack[] = [];
-  selectedTracksForDelete: AgendaSessionTrack[] = [];
-  selectedSpeakersForSave: AgendaSessionSpeaker[] = [];
-  selectedSpeakersForDelete: AgendaSessionSpeaker[] = [];
   sessions: AgendaSession[] = [];
   sessionID: number;
   agendaID: number;
@@ -35,8 +31,12 @@ export class SessionEditComponent implements OnInit {
   fileUploadApi = 'http://localhost:8080/file/save';
   file: string = null;
 
-  constructor(private agendaService: AgendaService, private route: ActivatedRoute, private fb: FormBuilder,
-              private router: Router, private sessionStorage: SessionStorageService, private validatorService: ValidatorService,
+  constructor(private agendaService: AgendaService,
+              private route: ActivatedRoute,
+              private fb: FormBuilder,
+              private router: Router,
+              private sessionStorage: SessionStorageService,
+              private validatorService: ValidatorService,
               private fileService: FileService) { }
 
   ngOnInit() {
@@ -48,12 +48,9 @@ export class SessionEditComponent implements OnInit {
     this.agendaService.findSessionById(this.agendaID, this.sessionID)
       .subscribe(
         (s) => {
-          console.log('Provera', s);
           this.agendaSession = s;
           this.validatorService.superSession = s.superSession;
           this.setForm(s);
-          // this.getTracks(s.agendaID, s.sessionID);
-          // this.getSpeakers(s.agendaID, s.sessionID);
         }
       );
   }
@@ -80,8 +77,7 @@ export class SessionEditComponent implements OnInit {
 
   getAttachment() {
     if (this.sessionStorage.retrieve('attachment-edit') === null) {
-      // this.myEvent.image = null;
-      this.updateSession(null);
+      this.updateSession(this.agendaSession.file);
     } else {
       this.fileService.getFile(this.sessionStorage.retrieve('attachment-edit'))
         .subscribe(
@@ -101,13 +97,9 @@ export class SessionEditComponent implements OnInit {
   updateSession(file: File) {
     this.getFormValues();
     this.agendaSession.file = file;
-    console.log('Ovo je agenda session provera ', this.agendaSession);
     this.agendaService.updateSession(this.agendaSession)
       .subscribe(
         (data) => {
-          console.log('Provera sve je u redu.', data);
-          this.updateSessionTracks();
-          this.updateSessionSpeakers();
           this.showSuccessMessage();
           this.router.navigate(['/session', this.eventID, this.agendaID, this.sessionID],
             {state: {mode: 'SE'}});
@@ -132,19 +124,10 @@ export class SessionEditComponent implements OnInit {
     this.agendaSession.timeFrom = timeFrom.toString();
     this.agendaSession.timeTo = timeTo.toString();
     this.agendaSession.sessionOverview = this.sessionForm.get('sessionOverview').value;
-    this.agendaSession.hall = this.selectedHall;
-  }
-
-  onTrackSelected(selectedTracks: AgendaSessionTrack[]) {
-    this.selectedTracksForSave = selectedTracks;
-  }
-
-  onTrackSelectedForDelete(selectedTracks: AgendaSessionTrack[]) {
-    this.selectedTracksForDelete = selectedTracks;
   }
 
   onHallSelected(selectedHall: Hall) {
-    this.selectedHall = selectedHall;
+    this.agendaSession.hall = selectedHall;
   }
 
   cleanForm() {
@@ -164,51 +147,14 @@ export class SessionEditComponent implements OnInit {
     this.selectedHall = null;
   }
 
-  updateSessionTracks() {
-    this.agendaService.saveAgendaSessionTracks(this.selectedTracksForSave).subscribe(
-      (data3) => {
-        console.log('Data:', data3);
-        this.deleteTracks();
-      }
-    );
+  changeSpeakersTable(speakers: AgendaSessionSpeaker[]) {
+    this.agendaSession.speakers = speakers;
   }
 
-  deleteTracks() {
-    this.agendaService.removeAgendaSessionTracks(this.selectedTracksForDelete).subscribe(
-      (data3) => {
-        console.log('Data:', data3);
-      }, error => {
-        console.log('Provera brisanje greska', error);
-      }
-    );
+  changeTracks(tracks: AgendaSessionTrack[]) {
+    this.agendaSession.tracks = tracks;
   }
 
-  onSpeakerForSave(speakers: AgendaSessionSpeaker[]) {
-    this.selectedSpeakersForSave = speakers;
-  }
-
-  onSpeakerForDelete(speakers: AgendaSessionSpeaker[]) {
-    this.selectedSpeakersForDelete = speakers;
-  }
-
-  updateSessionSpeakers() {
-    this.agendaService.saveAgendaSessionSpeakers(this.selectedSpeakersForSave).subscribe(
-      (data3) => {
-        console.log('Data:', data3);
-        this.deleteSpeakers();
-      }
-    );
-  }
-
-  deleteSpeakers() {
-    this.agendaService.removeAgendaSessionSpeakers(this.selectedSpeakersForDelete).subscribe(
-      (data3) => {
-        console.log('Data:', data3);
-      }, error => {
-        console.log('Provera brisanje greska', error);
-      }
-    );
-  }
   cancel() {
     this.router.navigate(['/session', this.eventID, this.agendaID, this.sessionID],
       {state: {mode: 'SE'}});
@@ -218,8 +164,7 @@ export class SessionEditComponent implements OnInit {
     this.validatorService.sendMessage
       .subscribe(
         (poruka) => {
-          this.dateValidation = [];
-          this.dateValidation.push({severity: 'error', summary: poruka});
+          this.dateValidation = poruka;
         }
       );
   }

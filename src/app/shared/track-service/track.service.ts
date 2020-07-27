@@ -16,10 +16,6 @@ export class TrackService {
   }
 
   saveTrack(track: Track) {
-    return this.httpClient.post('http://localhost:8080/track/save', track);
-  }
-
-  findAllBySession(agendaID, sessionID) {
-    return this.httpClient.get<AgendaSessionTrack[]>('http://localhost:8080/agendaSessionTrack/all/' + agendaID + '-' + sessionID);
+    return this.httpClient.post<Track>('http://localhost:8080/track/save', track);
   }
 }

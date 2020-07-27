@@ -2,6 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {Speaker} from '../../model/speaker';
 import {HttpClient} from '@angular/common/http';
 import {AgendaSessionSpeaker} from '../../model/agenda-session-speaker';
+import {AgendaSession} from '../../model/agenda-session';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +23,6 @@ export class SpeakerService {
     return this.httpClient.get<Speaker[]>('http://localhost:8080/speaker/all');
   }
 
-  findAllBySession(agendaID, sessionID) {
-    return this.httpClient.get<AgendaSessionSpeaker[]>('http://localhost:8080/agendaSessionSpeaker/all/' + agendaID + '-' + sessionID);
-  }
-
   findAllBySpeaker(speakerID) {
     return this.httpClient.get<AgendaSessionSpeaker[]>('http://localhost:8080/agendaSessionSpeaker/allBySpeaker/' + speakerID);
   }
@@ -41,5 +38,9 @@ export class SpeakerService {
 
   onSpeakerSelected(selectedSpeakers: Speaker[]) {
     this.speakerSelected.emit(selectedSpeakers);
+  }
+
+  getNonSelectedSpeakers(session: AgendaSession) {
+    return this.httpClient.get<Speaker[]>('http://localhost:8080/speaker/notOnSession/' + session.sessionID + '-' + session.agendaID);
   }
 }

@@ -18,7 +18,8 @@ export class FavoriteButtonComponent implements OnInit {
   @Input() agendaID: number;
   @Input() sessionID: number;
 
-  constructor(private sessionStorage: SessionStorageService, private userService: UserService,
+  constructor(private sessionStorage: SessionStorageService,
+              private userService: UserService,
               private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -27,7 +28,6 @@ export class FavoriteButtonComponent implements OnInit {
   public toggleSelected() {
     const user: User = this.sessionStorage.retrieve('currentUser');
     const eID = +this.route.snapshot.params.eventID;
-    console.log('Provera', eID);
     const userSession: UserSession = {
       agendaID: this.agendaID,
       sessionID: this.sessionID,
@@ -36,20 +36,14 @@ export class FavoriteButtonComponent implements OnInit {
       agendaSession: null,
       presence: null
     };
-    if (!this.selected) {
-      this.saveUserSession(userSession);
-    } else {
-      this.deleteUserSession(userSession, user);
-    }
+    !this.selected ? this.saveUserSession(userSession) : this.deleteUserSession(userSession, user);
     this.selected = !this.selected;
-    // this.selectedChange.emit(this.selected);
   }
 
   saveUserSession(userSession: UserSession) {
     this.userService.saveUserSession(userSession)
       .subscribe(
         (data) => {
-          console.log('Provera', data);
           this.msg.emit('Uspesno ste se prijavili na sekciju. Poslacemo Vam mejl kao podsetnik dan pre pocetka date sekcije');
         },
         error => {
@@ -62,7 +56,6 @@ export class FavoriteButtonComponent implements OnInit {
     this.userService.deleteUserSession(userSession.agendaID, userSession.sessionID, user.userID, userSession.eventID)
       .subscribe(
         (data) => {
-          console.log('Provera', data);
           this.msg.emit('Uklonjeno iz liste zeljenih sekcija.');
         },
         error => {

@@ -22,7 +22,9 @@ export class AddAttendeesComponent implements OnInit {
   eventAttendees: Presence[] = [];
   responsiveOptions;
 
-  constructor(private fb: FormBuilder, private userService: UserService, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder,
+              private userService: UserService,
+              private route: ActivatedRoute) {
     this.responsiveOptions = [
       {
         breakpoint: '1024px',
@@ -114,16 +116,9 @@ export class AddAttendeesComponent implements OnInit {
   }
 
   getUsers() {
-    this.userService.getUsers().subscribe(
+    this.userService.getNotInvitedUsers(this.eventID).subscribe(
       (data) => {
         this.sourceUsers = data;
-        for (const a of this.eventAttendees) {
-          for (let i = 0; i < this.sourceUsers.length; i++) {
-            if (a.userID === this.sourceUsers[i].userID) {
-              this.sourceUsers.splice(i, 1);
-            }
-          }
-        }
       },
       (error) => {
         console.log('GRESKAAA!', error);
@@ -143,26 +138,25 @@ export class AddAttendeesComponent implements OnInit {
   }
 
   savePresences() {
-    for (const u of this.targetUsers) {
+    this.targetUsers.forEach(user => {
       this.presences.push({
-        userID: u.userID,
+        userID: user.userID,
         eventID: this.eventID,
         user: null,
         event: null
       });
-    }
+    });
     this.userService.savePresences(this.presences).subscribe(
       (data) => {
-        console.log('Provera', data);
-        for (const p of this.presences) {
-          for (let i = 0; i < this.targetUsers.length; i++) {
-            if (p.userID === this.targetUsers[i].userID) {
-              p.user = this.targetUsers[i];
-              this.eventAttendees.push(p);
-              this.targetUsers.splice(i, 1);
+        this.presences.forEach(presence => {
+          this.targetUsers.forEach(user => {
+            if (presence.userID === user.userID) {
+              presence.user = user;
+              this.eventAttendees.push(presence);
+              this.targetUsers = this.targetUsers.filter(item => item !== user);
             }
-          }
-        }
+          });
+        });
         this.showSuccessMessage2();
       },
       (error) => {

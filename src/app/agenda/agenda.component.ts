@@ -14,22 +14,21 @@ import {Router} from '@angular/router';
 })
 export class AgendaComponent implements OnInit {
   agendaID: number;
-  agendaName: string;
   sessions: AgendaSession[] = [];
   agenda: Agenda;
-
   displayDialog = false;
   msgs: Message[] = [];
-  nameRequired: Message[] = [];
   agendaForm: FormGroup;
-  constructor(private agendaService: AgendaService, private fb: FormBuilder, private sessionStorage: SessionStorageService,
+
+  constructor(private agendaService: AgendaService,
+              private fb: FormBuilder,
+              private sessionStorage: SessionStorageService,
               private router: Router) {
   }
 
   ngOnInit() {
     this.agendaService.getNextID().subscribe(
       (data) => {
-        console.log('Data:', data);
         this.agendaID = data;
       },
       (error) => {
@@ -37,54 +36,18 @@ export class AgendaComponent implements OnInit {
       }
     );
     this.cleanForm();
-    this.nameRequired.push({severity: 'error', summary: 'Name is required.'});
   }
 
   onSubmit() {
     this.makeAgenda();
     this.agendaService.saveAgenda(this.agenda).subscribe(
       (data) => {
-        console.log('Data:', data);
-        this.saveAgendaSessions();
-      },
-      (error) => {
-        console.log('GRESKAAA!', error);
-      }
-    );
-  }
-
-  saveAgendaSessions() {
-    this.agendaService.saveAgendaSessions(this.sessions).subscribe(
-      (data2) => {
-        console.log('Data:', data2);
-        for (const s of this.sessions) {
-          this.saveAgendaSessionTracks(s);
-          this.saveAgendaSessionSpeakers(s);
-        }
         this.displayDialog = false;
         this.showSuccessMessage();
         this.router.navigate(['/event-create']);
-        // this.cleanForm();
-        // this.agendaService.refreshSessionPanel.emit();
       },
       (error) => {
-        console.log('GRESKAAA sessions!', error);
-      }
-    );
-  }
-
-  saveAgendaSessionTracks(session: AgendaSession) {
-    this.agendaService.saveAgendaSessionTracks(session.tracks).subscribe(
-      (data3) => {
-        console.log('Data:', data3);
-      }
-    );
-  }
-
-  saveAgendaSessionSpeakers(session: AgendaSession) {
-    this.agendaService.saveAgendaSessionSpeakers(session.speakers).subscribe(
-      (data4) => {
-        console.log('Data:', data4);
+        console.log('GRESKAAA!', error);
       }
     );
   }
@@ -101,7 +64,7 @@ export class AgendaComponent implements OnInit {
       name: this.agendaForm.get('agendaName').value,
       dateFrom: timeFrom.toString(),
       dateTo: timeTo.toString(),
-      sessions: null
+      sessions: this.sessions
     };
   }
 

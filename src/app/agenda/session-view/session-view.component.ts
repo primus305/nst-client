@@ -24,20 +24,7 @@ export class SessionViewComponent implements OnInit {
   agendaID: number;
   sessionID: number;
   eventID: number;
-  agendaSession: AgendaSession = {
-    sessionID: null,
-    agendaID: null,
-    superSession: null,
-    name: null,
-    timeFrom: null,
-    timeTo: null,
-    hall: null,
-    sessionOverview: null,
-    tracks: null,
-    speakers: null,
-    file: null
-  };
-  hallName = '';
+  agendaSession: AgendaSession;
   sessionTracks: AgendaSessionTrack[] = [];
   sessionSpeakers: AgendaSessionSpeaker[] = [];
   subSessions: AgendaSession[] = [];
@@ -49,9 +36,15 @@ export class SessionViewComponent implements OnInit {
   speakerMode = false;
   currentSession;
 
-  constructor(private route: ActivatedRoute, private agendaService: AgendaService, private trackService: TrackService,
-              private speakerService: SpeakerService, private router: Router, private sessionStorage: SessionStorageService,
-              private userService: UserService, private location: Location, private fileService: FileService) {
+  constructor(private route: ActivatedRoute,
+              private agendaService: AgendaService,
+              private trackService: TrackService,
+              private speakerService: SpeakerService,
+              private router: Router,
+              private sessionStorage: SessionStorageService,
+              private userService: UserService,
+              private location: Location,
+              private fileService: FileService) {
     this.responsiveOptions = [
       {
         breakpoint: '1024px',
@@ -73,10 +66,6 @@ export class SessionViewComponent implements OnInit {
 
   ngOnInit() {
     this.msgs = [];
-/*    this.currentSession = history.state;
-    this.agendaID = +this.currentSession.agendaID;
-    this.sessionID = +this.currentSession.sessionID;
-    this.eventID = +this.currentSession.eventID;*/
     this.agendaID = +this.route.snapshot.params.agenda;
     this.sessionID = +this.route.snapshot.params.id;
     this.eventID = +this.route.snapshot.params.eventID;
@@ -90,14 +79,9 @@ export class SessionViewComponent implements OnInit {
         (agendaSession) => {
           console.log('Session content', agendaSession);
           this.agendaSession = agendaSession;
-          if (agendaSession.hall != null) {
-            this.hallName = agendaSession.hall.name;
-          } else {
-            this.hallName = '';
-          }
-          this.getTracks();
-          this.getSpeakers();
-          this.getSubSessions();
+          this.subSessions = this.agendaSession.subSessions;
+          this.sessionSpeakers = this.agendaSession.speakers;
+          this.sessionTracks = this.agendaSession.tracks;
           const user: User = this.sessionStorage.retrieve('currentUser');
           this.userOrSpeakerMode(agendaSession, user);
         }
@@ -112,66 +96,6 @@ export class SessionViewComponent implements OnInit {
     if (currentUser.speakerID != null) {
       this.getSpeakerSession(agendaSession.agendaID, agendaSession.sessionID, currentUser.speakerID);
     }
-  }
-
-  getTracks() {
-    this.trackService.findAllBySession(this.agendaID, this.sessionID)
-      .subscribe(
-        (tracks) => {
-          console.log('trakovi', tracks);
-          this.sessionTracks = tracks;
-        }
-      );
-  }
-
-  getSpeakers() {
-    this.speakerService.findAllBySession(this.agendaID, this.sessionID)
-      .subscribe(
-        (speakers) => {
-          console.log('predavaci', speakers);
-          this.sessionSpeakers = speakers;
-        }
-      );
-  }
-
-  getSubSessions() {
-    this.agendaService.findSessionBySuperSession(this.agendaID, this.sessionID)
-      .subscribe(
-        (subSessions) => {
-          console.log('podsesije', subSessions);
-          this.subSessions = subSessions;
-          // tslint:disable-next-line:prefer-for-of
-          for (let i = 0; i < this.subSessions.length; i++) {
-            this.getSubSessionsSpeakers(this.subSessions[i], i);
-            this.getSubSessionsTracks(this.subSessions[i], i);
-          }
-        }
-      );
-  }
-
-  getSubSessionsSpeakers(subSession: AgendaSession, index: number) {
-    this.speakerService.findAllBySession(subSession.agendaID, subSession.sessionID)
-      .subscribe(
-        (speakers) => {
-          console.log('predavaci podsesija', speakers);
-          for (let i = 0; i < speakers.length; i++) {
-            if (i !== speakers.length - 1) {
-              speakers[i].speaker.lastName = speakers[i].speaker.lastName + ',';
-            }
-          }
-          this.subSessions[index].speakers = speakers;
-        }
-      );
-  }
-
-  getSubSessionsTracks(subSession: AgendaSession, index: number) {
-    this.trackService.findAllBySession(subSession.agendaID, subSession.sessionID)
-      .subscribe(
-        (tracks) => {
-          console.log('predavaci podsesija', tracks);
-          this.subSessions[index].tracks = tracks;
-        }
-      );
   }
 
   openSubSession(subSession: AgendaSession) {
@@ -221,7 +145,6 @@ export class SessionViewComponent implements OnInit {
     this.userService.getUserSession(agendaID, sessionID, userID, eventID)
       .subscribe(
         (userSession) => {
-          console.log('provera my session', userSession);
           if (userSession != null) {
             this.mySession = true;
             this.showInfo('Polaznik');
@@ -239,7 +162,6 @@ export class SessionViewComponent implements OnInit {
     this.speakerService.findById(agendaID, sessionID, speakerID)
       .subscribe(
         (speakerSession) => {
-          console.log('provera speaker session', speakerSession);
           if (speakerSession != null) {
             this.speakerMode = true;
             this.showInfo('Predavac');

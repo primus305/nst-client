@@ -49,7 +49,7 @@ export class MySessionsComponent implements OnInit {
       .subscribe(
         (mySessions) => {
           console.log('Provera', mySessions);
-          for (const s of mySessions) {
+          mySessions.forEach(s => {
             const eventSession: EventSession = {
               eventID: s.eventID,
               agendaID: s.agendaID,
@@ -60,7 +60,7 @@ export class MySessionsComponent implements OnInit {
               timeTo: new Date(s.agendaSession.timeTo)
             };
             this.mySessions.push(eventSession);
-          }
+          });
           this.userSessions = new MatTableDataSource(this.mySessions);
           this.setUserSessionsPast(this.mySessions);
           this.setUserSessionsFuture(this.mySessions);
@@ -87,22 +87,22 @@ export class MySessionsComponent implements OnInit {
       .subscribe(
         (events) => {
           console.log('Provera spekaer events:', events);
-          for (const ss of sessionSpeakers) {
-            for (const e of events) {
+          sessionSpeakers.forEach(ss => {
+            events.forEach(e => {
               if (ss.agendaID === e.agenda.agendaID) {
                 const eventSession: EventSession = {
                   eventID: e.eventID,
                   agendaID: ss.agendaID,
                   sessionID: ss.sessionID,
                   eventName: e.name,
-                  name: ss.agendaSession.name,
-                  timeFrom: new Date(ss.agendaSession.timeFrom),
-                  timeTo: new Date(ss.agendaSession.timeTo)
+                  name: ss.agendaSessionName,
+                  timeFrom: new Date(ss.agendaSessionTimeFrom),
+                  timeTo: new Date(ss.agendaSessionTimeTo)
                 };
                 this.mySessions.push(eventSession);
               }
-            }
-          }
+            });
+          });
           this.userSessions = new MatTableDataSource(this.mySessions);
           console.log('Provera lokalna:', this.mySessions);
           this.setUserSessionsPast(this.mySessions);

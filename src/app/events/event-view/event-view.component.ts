@@ -12,14 +12,7 @@ import {UserService} from '../../shared/user-service/user.service';
   styleUrls: ['./event-view.component.css']
 })
 export class EventViewComponent implements OnInit {
-  myEvent: MyEvent = {
-    eventID: null,
-    name: null,
-    description: null,
-    location: null,
-    image: null,
-    agenda: null
-  };
+  myEvent: MyEvent;
   retrievedImage: any;
   eventAttendees: Presence[] = [];
   responsiveOptions;
@@ -51,7 +44,9 @@ export class EventViewComponent implements OnInit {
     this.eventService.findById(this.eventID)
       .subscribe(
         (e) => {
+          console.log('Provera eventa ', e);
           this.myEvent = e;
+          // this.retrievedImage = 'data:image/png;base64,' + this.myEvent.image.fileByte;
           this.getImage();
         }
       );

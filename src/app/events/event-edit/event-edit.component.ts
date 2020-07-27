@@ -31,9 +31,6 @@ export class EventEditComponent implements OnInit {
               private route: ActivatedRoute) { }
 
   ngOnInit() {
-/*    this.cleanForm();
-    this.showMessage();
-    this.setMessages();*/
     this.cleanForm();
     this.eventID = +this.route.snapshot.params.id;
     this.eventService.findById(this.eventID)
@@ -109,6 +106,7 @@ export class EventEditComponent implements OnInit {
     if (myEvent.agenda) {
       this.haveAgenda = true;
     }
+    // this.image = 'data:image/png;base64,' + myEvent.image.fileByte;
     this.getImage(myEvent.image.name);
     this.eventForm = this.fb.group({
       eventName: new FormControl(myEvent.name, Validators.required),
@@ -127,18 +125,10 @@ export class EventEditComponent implements OnInit {
   }
 
   getAgenda() {
-    console.log('Provera agenda sesija', this.sessionStorage.retrieve('agenda'));
     if (this.sessionStorage.retrieve('agenda') !== null) {
       this.id = this.sessionStorage.retrieve('agenda');
-      const a: Agenda = {
-        agendaID: this.id + 1,
-        name: null,
-        dateFrom: null,
-        dateTo: null,
-        sessions: null
-      };
       this.sessionStorage.clear('agenda');
-      this.myEvent.agenda = a;
+      this.myEvent.agenda = {agendaID: this.id + 1};
     }
   }
 
@@ -148,7 +138,6 @@ export class EventEditComponent implements OnInit {
     this.myEvent.description = this.eventForm.get('eventDescription').value;
     this.myEvent.location = this.eventForm.get('eventLocation').value;
     if (this.sessionStorage.retrieve('logo-edit') === null) {
-      // this.myEvent.image = null;
       this.updateEvent(this.myEvent);
     } else {
       this.fileService.getFile(this.sessionStorage.retrieve('logo-edit'))

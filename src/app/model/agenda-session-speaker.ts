@@ -5,6 +5,8 @@ export class AgendaSessionSpeaker {
   sessionID: number;
   agendaID: number;
   speakerID: number;
-  agendaSession: AgendaSession;
+  agendaSessionName?: string;
   speaker: Speaker;
+  agendaSessionTimeFrom?: string;
+  agendaSessionTimeTo?: string;
 }

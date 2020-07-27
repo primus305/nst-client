@@ -46,10 +46,10 @@ export class EventsComponent implements OnInit {
       .subscribe(
         (events) => {
           this.events = events;
-          // tslint:disable-next-line:prefer-for-of
-          for (let i = 0; i < this.events.length; i++) {
-            this.getImage2(this.events[i].image.name, i);
-          }
+          this.events.forEach((e, i) => {
+            // this.events[i].image.name = 'data:image/png;base64,' + e.image.fileByte;
+            this.getImage2(e.image.name, i);
+          });
         },
         (error) => {
           console.log('GRESKAAA!', error);
@@ -62,9 +62,10 @@ export class EventsComponent implements OnInit {
       .subscribe(
         (presences) => {
           this.attendeesEvents = presences;
-          for (let i = 0; i < this.attendeesEvents.length; i++) {
-            this.getImage(this.attendeesEvents[i].event.image.name, i);
-          }
+          this.attendeesEvents.forEach((e, i) => {
+            // this.attendeesEvents[i].event.image.name = 'data:image/png;base64,' + e.event.image.fileByte;
+            this.getImage(e.event.image.name, i);
+          });
         }
       );
   }
@@ -73,11 +74,11 @@ export class EventsComponent implements OnInit {
     this.eventService.findAllBySpeaker(this.sessionStorage.retrieve('currentUser').speakerID)
       .subscribe(
         (events) => {
-          console.log('Provera spekaer events:', events);
           this.speakerEvents = events;
-          for (let i = 0; i < this.speakerEvents.length; i++) {
-            this.getImage3(this.speakerEvents[i].image.name, i);
-          }
+          this.speakerEvents.forEach((e, i) => {
+            // this.speakerEvents[i].image.name = 'data:image/png;base64,' + e.image.fileByte;
+            this.getImage3(e.image.name, i);
+          });
         }
       );
   }

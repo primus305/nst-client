@@ -22,8 +22,8 @@ export class UserService {
     return this.httpClient.post<User>('http://localhost:8080/user/save', user);
   }
 
-  getUsers() {
-    return this.httpClient.get<User[]>('http://localhost:8080/user/all');
+  getNotInvitedUsers(eventID) {
+    return this.httpClient.get<User[]>('http://localhost:8080/user/allNotInvited/' + eventID);
   }
 
   savePresences(presences) {
@@ -71,8 +71,6 @@ export class UserService {
             console.log('Provera:', user);
             this.sessionStorage.store('currentUser', user);
             this.sessionStorage.store('loginTime', new Date().toString());
-            /*this.loggedIn.next(true);
-            this.admin.next(user.role === 'ADMINISTRATOR');*/
             this.attendee = (user.role === 'ATTENDEE');
             this.loggedIn = true;
             this.admin = (user.role === 'ADMINISTRATOR');

@@ -58,13 +58,12 @@
         </div>
       </div>
       <div class="form-control" *ngIf="sessionForm.errors" style="background-color: #f8b7bd; color: #212121;">
-        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> {{dateValidation.entries().next().value[1].summary}}</span>
+        <span ><i class="pi pi-times" style="vertical-align: middle;"></i> {{dateValidation}}</span>
       </div>
-<!--      <p-messages [(value)]="dateValidation" *ngIf="sessionForm.errors"></p-messages>-->
       <br>
-      <app-speaker-edit (speakerSelectedForSave)="onSpeakerForSave($event)" (speakerSelectedForDelete)="onSpeakerForDelete($event)"></app-speaker-edit>
+      <app-speaker-edit (changeSpeakersTable)="changeSpeakersTable($event)" [sessionSpeakers]="agendaSession?.speakers" [session]="agendaSession"></app-speaker-edit>
       <br>
-      <app-track-edit (trackSelectedForSave)="onTrackSelected($event)" (trackSelectedForDelete)="onTrackSelectedForDelete($event)"></app-track-edit>
+      <app-track-edit (changeTracks)="changeTracks($event)" [sessionTracks]="agendaSession?.tracks"></app-track-edit>
       <br>
       <app-hall-panel (hallSelected)="onHallSelected($event)" [selectedHall]="selectedHall"></app-hall-panel>
       <br>

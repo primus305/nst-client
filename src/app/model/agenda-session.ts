@@ -16,4 +16,5 @@ export class AgendaSession {
     tracks: AgendaSessionTrack[];
     speakers: AgendaSessionSpeaker[];
     file: File;
+    subSessions?: AgendaSession[];
 }
